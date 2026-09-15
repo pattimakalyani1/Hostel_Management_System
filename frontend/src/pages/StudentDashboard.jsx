@@ -100,7 +100,8 @@ const StudentDashboard = () => {
               title="Pending Outpass"
               value={dashboardData?.summary?.pendingOutpassCount || 0}
               color={dashboardData?.summary?.pendingOutpassCount > 0 ? 'info' : 'success'}
-              subtitle="Awaiting approval"
+              subtitle="View outpass management"
+              to="/student/outpass"
             />
           </section>
 

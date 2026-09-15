@@ -12,6 +12,8 @@ import StudentDashboard from '../pages/StudentDashboard';
 import StudentComplaints from '../pages/StudentComplaints';
 import WardenDashboard from '../pages/WardenDashboard';
 import WardenComplaints from '../pages/WardenComplaints';
+import StudentOutpass from '../pages/StudentOutpass';
+import WardenOutpass from '../pages/WardenOutpass';
 
 const AppRoutes = () => {
   const { isAuthenticated, user, loading } = useAuth();
@@ -101,6 +103,14 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/student/outpass"
+        element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <StudentOutpass />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Protected Routes - Warden */}
       <Route
@@ -116,6 +126,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['WARDEN']}>
             <WardenComplaints />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/warden/outpass"
+        element={
+          <ProtectedRoute allowedRoles={['WARDEN']}>
+            <WardenOutpass />
           </ProtectedRoute>
         }
       />
