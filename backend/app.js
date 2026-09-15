@@ -3,10 +3,10 @@ const express = require('express');
 const cors = require('cors');
 
 // Import routes
-const authRoutes = require('./routes/authRoutes');
+const authRoutes    = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
-const wardenRoutes = require('./routes/wardenRoutes');
-const roomRoutes = require('./routes/roomRoutes');
+const wardenRoutes  = require('./routes/wardenRoutes');
+const roomRoutes    = require('./routes/roomRoutes');
 const outpassRoutes = require('./routes/outpassRoutes');
 
 const app = express();
@@ -29,10 +29,10 @@ app.get('/api/health', (req, res) => {
 });
 
 // API Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth',    authRoutes);
 app.use('/api/student', studentRoutes);
-app.use('/api/warden', wardenRoutes);
-app.use('/api/room', roomRoutes);
+app.use('/api/warden',  wardenRoutes);
+app.use('/api/rooms',   roomRoutes);
 app.use('/api/outpass', outpassRoutes);
 
 // 404 handler
@@ -44,7 +44,7 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
   console.error('Stack:', err.stack);
-  
+
   res.status(err.status || 500).json({
     message: err.message || 'Internal Server Error',
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
