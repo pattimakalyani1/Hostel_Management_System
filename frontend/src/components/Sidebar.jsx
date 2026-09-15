@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/sidebar.css';
@@ -7,40 +6,36 @@ const Sidebar = ({ userType }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout, user } = useAuth();
-  const [activeItem, setActiveItem] = useState('dashboard');
 
   const studentMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', isActive: true },
+    { id: 'dashboard', label: 'Dashboard', path: '/student/dashboard' },
     { id: 'profile', label: 'My Profile', isPlaceholder: true },
     { id: 'room', label: 'My Room', isPlaceholder: true },
     { id: 'fees', label: 'My Fees', isPlaceholder: true },
     { id: 'complaints', label: 'My Complaints', isPlaceholder: true },
-    { id: 'outpass', label: 'My Outpass', isPlaceholder: true }
+    { id: 'outpass', label: 'My Outpass', path: '/student/outpass' }
   ];
 
   const wardenMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', isActive: true },
+    { id: 'dashboard', label: 'Dashboard', path: '/warden/dashboard' },
     { id: 'rooms', label: 'Rooms', isPlaceholder: true },
     { id: 'allocations', label: 'Allocations', isPlaceholder: true },
     { id: 'fees', label: 'Fees', isPlaceholder: true },
     { id: 'complaints', label: 'Complaints', isPlaceholder: true },
-    { id: 'outpass', label: 'Outpass', isPlaceholder: true },
+    { id: 'outpass', label: 'Outpass', path: '/warden/outpass' },
     { id: 'students', label: 'Students', isPlaceholder: true }
   ];
 
   const menuItems = userType === 'warden' ? wardenMenuItems : studentMenuItems;
 
+  // Active item derives from the current route so it stays correct on refresh.
+  const isItemActive = (item) => item.path && location.pathname === item.path;
+
   const handleMenuClick = (item) => {
-    if (item.id === 'dashboard') {
-      setActiveItem('dashboard');
-      if (userType === 'warden') {
-        navigate('/warden/dashboard');
-      } else {
-        navigate('/student/dashboard');
-      }
-    } else {
-      setActiveItem(item.id);
+    if (item.path) {
+      navigate(item.path);
     }
+    // Placeholder items (other modules) are not yet wired to routes.
   };
 
   const handleLogout = () => {
@@ -87,7 +82,7 @@ const Sidebar = ({ userType }) => {
           {menuItems.map((item) => (
             <li key={item.id}>
               <button
-                className={`sidebar-menu-item ${activeItem === item.id ? 'active' : ''} ${item.isPlaceholder ? 'placeholder' : ''}`}
+                className={`sidebar-menu-item ${isItemActive(item) ? 'active' : ''} ${item.isPlaceholder ? 'placeholder' : ''}`}
                 onClick={() => handleMenuClick(item)}
               >
                 <span className="menu-label">{item.label}</span>

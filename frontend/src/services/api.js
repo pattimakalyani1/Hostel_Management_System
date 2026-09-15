@@ -60,4 +60,22 @@ export const wardenAPI = {
   getDashboard: () => api.get('/warden/dashboard')
 };
 
+// Outpass API calls (Module 6)
+export const outpassAPI = {
+  // Student
+  create: (data) => api.post('/outpass', data),
+  getMine: () => api.get('/outpass/my'),
+  // Warden
+  getPending: () => api.get('/outpass/pending'),
+  getApproved: () => api.get('/outpass/approved'),
+  getOverdue: () => api.get('/outpass/overdue'),
+  getAll: () => api.get('/outpass/all'),
+  // Shared
+  getById: (id) => api.get(`/outpass/${id}`),
+  // Warden actions
+  approve: (id, data = {}) => api.put(`/outpass/${id}/approve`, data),
+  reject: (id, wardenComment) => api.put(`/outpass/${id}/reject`, { wardenComment }),
+  markReturned: (id) => api.put(`/outpass/${id}/return`)
+};
+
 export default api;
