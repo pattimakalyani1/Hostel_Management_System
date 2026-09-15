@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { wardenAPI } from '../services/api';
+import { wardenAPI, feeAPI } from '../services/api';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import DashboardCard from '../components/DashboardCard';
+import { formatCurrency } from '../utils/feeHelpers';
 import '../styles/dashboard.css';
+import '../styles/fees.css';
 
 const WardenDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
+  const [feeSummary, setFeeSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -18,8 +23,15 @@ const WardenDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const response = await wardenAPI.getDashboard();
-      setDashboardData(response.data);
+      // Fetch the existing dashboard plus the fee summary for collection info.
+      const [dashboardRes, summaryRes] = await Promise.all([
+        wardenAPI.getDashboard(),
+        feeAPI.getSummary().catch(() => null)
+      ]);
+      setDashboardData(dashboardRes.data);
+      if (summaryRes) {
+        setFeeSummary(summaryRes.data.summary);
+      }
     } catch (err) {
       console.error('Dashboard fetch error:', err);
       setError('Failed to load dashboard data. Please refresh the page.');
@@ -84,12 +96,20 @@ const WardenDashboard = () => {
               color="info"
               subtitle={`${dashboardData?.summary?.totalBeds || 0} beds total`}
             />
-            <DashboardCard
-              title="Pending Fees"
-              value={dashboardData?.summary?.pendingFeesCount || 0}
-              color={dashboardData?.summary?.pendingFeesCount > 0 ? 'warning' : 'success'}
-              subtitle="Fees to collect"
-            />
+            <div
+              role="button"
+              tabIndex={0}
+              className="dashboard-card-link"
+              onClick={() => navigate('/warden/fees')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate('/warden/fees'); }}
+            >
+              <DashboardCard
+                title="Pending Fees"
+                value={dashboardData?.summary?.pendingFeesCount || 0}
+                color={dashboardData?.summary?.pendingFeesCount > 0 ? 'warning' : 'success'}
+                subtitle="Fees to collect"
+              />
+            </div>
             <DashboardCard
               title="Open Complaints"
               value={dashboardData?.summary?.openComplaintsCount || 0}
@@ -149,6 +169,34 @@ const WardenDashboard = () => {
                   <span className="action-count">{dashboardData?.summary?.pendingOutpassCount || 0}</span>
                 </div>
               </div>
+            </div>
+
+            <div className="info-card">
+              <h3>Fee Collection</h3>
+              {feeSummary ? (
+                <div className="action-list">
+                  <div className="action-item">
+                    <span className="action-title">Total Fee Amount</span>
+                    <span className="action-count">{formatCurrency(feeSummary.totalFeeAmount)}</span>
+                  </div>
+                  <div className="action-item">
+                    <span className="action-title">Total Collected</span>
+                    <span className="action-count">{formatCurrency(feeSummary.totalPaidAmount)}</span>
+                  </div>
+                  <div className="action-item">
+                    <span className="action-title">Total Outstanding</span>
+                    <span className="action-count">{formatCurrency(feeSummary.totalOutstandingAmount)}</span>
+                  </div>
+                  <div className="action-item">
+                    <span className="action-title">Overdue Fees</span>
+                    <span className="action-count">{feeSummary.overdueFeesCount || 0}</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="empty-state">
+                  <p>Collection data unavailable</p>
+                </div>
+              )}
             </div>
 
             <div className="info-card">

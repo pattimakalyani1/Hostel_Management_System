@@ -10,6 +10,9 @@ import ResetPassword from '../pages/ResetPassword';
 import ChangePassword from '../pages/ChangePassword';
 import StudentDashboard from '../pages/StudentDashboard';
 import WardenDashboard from '../pages/WardenDashboard';
+import StudentFees from '../pages/StudentFees';
+import StudentPayments from '../pages/StudentPayments';
+import WardenFees from '../pages/WardenFees';
 
 const AppRoutes = () => {
   const { isAuthenticated, user, loading } = useAuth();
@@ -91,6 +94,22 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/student/fees"
+        element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <StudentFees />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/payments"
+        element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <StudentPayments />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Protected Routes - Warden */}
       <Route
@@ -98,6 +117,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['WARDEN']}>
             <WardenDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/warden/fees"
+        element={
+          <ProtectedRoute allowedRoles={['WARDEN']}>
+            <WardenFees />
           </ProtectedRoute>
         }
       />

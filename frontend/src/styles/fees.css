@@ -1,0 +1,438 @@
+/* Fees & Payments module styles */
+
+/* Page header row with an optional action button */
+.fees-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.fees-header h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+/* Buttons */
+.fees-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.fees-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fees-btn-primary {
+  background: var(--primary-color);
+  color: var(--white);
+}
+
+.fees-btn-primary:hover:not(:disabled) {
+  box-shadow: var(--shadow);
+}
+
+.fees-btn-secondary {
+  background: var(--white);
+  color: var(--gray-700);
+  border-color: var(--gray-200);
+}
+
+.fees-btn-secondary:hover:not(:disabled) {
+  background: var(--gray-50);
+}
+
+.fees-btn-danger {
+  background: var(--white);
+  color: var(--error-color);
+  border-color: var(--error-color);
+}
+
+.fees-btn-danger:hover:not(:disabled) {
+  background: var(--error-light);
+}
+
+.fees-btn-sm {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.78rem;
+}
+
+.fees-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* Table */
+.fees-table-wrap {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+.fees-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.fees-table th,
+.fees-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-100);
+  vertical-align: middle;
+}
+
+.fees-table th {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-500);
+  background: var(--gray-50);
+  font-weight: 600;
+}
+
+.fees-table tbody tr:hover {
+  background: var(--gray-50);
+}
+
+.fees-table td.amount {
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.fees-cell-primary {
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.fees-cell-sub {
+  font-size: 0.78rem;
+  color: var(--gray-500);
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.status-pending {
+  background: var(--warning-color);
+  color: var(--white);
+}
+
+.status-partial {
+  background: var(--info-color);
+  color: var(--white);
+}
+
+.status-paid {
+  background: var(--success-color);
+  color: var(--white);
+}
+
+.status-overdue {
+  background: var(--error-color);
+  color: var(--white);
+}
+
+.status-success {
+  background: var(--success-color);
+  color: var(--white);
+}
+
+.status-failed {
+  background: var(--error-color);
+  color: var(--white);
+}
+
+/* Fee cards (student view) */
+.fee-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.fee-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fee-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.fee-card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.fee-card-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.fee-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.fee-card-row .label {
+  color: var(--gray-500);
+}
+
+.fee-card-row .value {
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.fee-card-row .value.outstanding {
+  color: var(--error-color);
+}
+
+.fee-card-row .value.paid {
+  color: var(--success-color);
+}
+
+.fee-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-lg {
+  max-width: 680px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.modal-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--gray-500);
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  color: var(--gray-800);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--gray-100);
+}
+
+/* Forms */
+.fees-form-group {
+  margin-bottom: 1.1rem;
+}
+
+.fees-form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 0.4rem;
+}
+
+.fees-form-group input,
+.fees-form-group select,
+.fees-form-group textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--gray-800);
+  font-family: inherit;
+}
+
+.fees-form-group input:focus,
+.fees-form-group select:focus,
+.fees-form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.fees-form-group textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.fees-field-error {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--error-color);
+}
+
+/* Inline alerts */
+.fees-alert {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.fees-alert-error {
+  background: var(--error-light);
+  color: var(--error-color);
+}
+
+.fees-alert-success {
+  background: var(--success-light, #e6f7ed);
+  color: var(--success-color);
+}
+
+/* Detail rows (fee/payment details) */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.detail-item .label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-500);
+}
+
+.detail-item .value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray-800);
+}
+
+.detail-section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin: 1rem 0 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+/* Summary cards allow a 4-per-row layout on fees pages */
+.dashboard-cards.fees-summary {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .dashboard-cards.fees-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-cards.fees-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-cards.fees-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Clickable dashboard card wrapper (keeps DashboardCard visuals intact) */
+.dashboard-card-link {
+  cursor: pointer;
+  border-radius: var(--radius-lg);
+  outline: none;
+}
+
+.dashboard-card-link:focus-visible {
+  box-shadow: 0 0 0 2px var(--primary-color);
+}

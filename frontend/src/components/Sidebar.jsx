@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/sidebar.css';
@@ -7,22 +6,22 @@ const Sidebar = ({ userType }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout, user } = useAuth();
-  const [activeItem, setActiveItem] = useState('dashboard');
 
   const studentMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', isActive: true },
+    { id: 'dashboard', label: 'Dashboard', path: '/student/dashboard' },
     { id: 'profile', label: 'My Profile', isPlaceholder: true },
     { id: 'room', label: 'My Room', isPlaceholder: true },
-    { id: 'fees', label: 'My Fees', isPlaceholder: true },
+    { id: 'fees', label: 'My Fees', path: '/student/fees' },
+    { id: 'payments', label: 'Payment History', path: '/student/payments' },
     { id: 'complaints', label: 'My Complaints', isPlaceholder: true },
     { id: 'outpass', label: 'My Outpass', isPlaceholder: true }
   ];
 
   const wardenMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', isActive: true },
+    { id: 'dashboard', label: 'Dashboard', path: '/warden/dashboard' },
     { id: 'rooms', label: 'Rooms', isPlaceholder: true },
     { id: 'allocations', label: 'Allocations', isPlaceholder: true },
-    { id: 'fees', label: 'Fees', isPlaceholder: true },
+    { id: 'fees', label: 'Fees', path: '/warden/fees' },
     { id: 'complaints', label: 'Complaints', isPlaceholder: true },
     { id: 'outpass', label: 'Outpass', isPlaceholder: true },
     { id: 'students', label: 'Students', isPlaceholder: true }
@@ -30,16 +29,15 @@ const Sidebar = ({ userType }) => {
 
   const menuItems = userType === 'warden' ? wardenMenuItems : studentMenuItems;
 
+  // Active item is derived from the current route (falls back to dashboard).
+  const activeItem =
+    menuItems.find((item) => item.path && location.pathname === item.path)?.id ||
+    'dashboard';
+
   const handleMenuClick = (item) => {
-    if (item.id === 'dashboard') {
-      setActiveItem('dashboard');
-      if (userType === 'warden') {
-        navigate('/warden/dashboard');
-      } else {
-        navigate('/student/dashboard');
-      }
-    } else {
-      setActiveItem(item.id);
+    // Navigable items have a `path`; placeholders do nothing yet.
+    if (item.path) {
+      navigate(item.path);
     }
   };
 
