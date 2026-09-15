@@ -95,4 +95,24 @@ export const roomAPI = {
   vacateAllocation: (id) => api.put(`/room/allocations/${id}/vacate`)
 };
 
+// Fees & Payments API calls
+export const feeAPI = {
+  // Student
+  getMyFees: () => api.get('/fees/my'),
+  getMyPayments: () => api.get('/fees/my/payments'),
+  // studentId is never sent; the backend derives it from the auth token
+  makePayment: (feeId, data) => api.post(`/fees/${feeId}/payments`, data),
+
+  // Warden
+  getAllFees: () => api.get('/fees'),
+  createFee: (data) => api.post('/fees', data),
+  getFee: (id) => api.get(`/fees/${id}`),
+  updateFee: (id, data) => api.put(`/fees/${id}`, data),
+  deleteFee: (id) => api.delete(`/fees/${id}`),
+  getAllPayments: () => api.get('/fees/payments'),
+  getPayment: (id) => api.get(`/fees/payments/${id}`),
+  getSummary: () => api.get('/fees/summary'),
+  getStudents: () => api.get('/fees/students')
+};
+
 export default api;

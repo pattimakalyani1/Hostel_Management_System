@@ -11,6 +11,9 @@ import ChangePassword from '../pages/ChangePassword';
 import StudentDashboard from '../pages/StudentDashboard';
 import StudentComplaints from '../pages/StudentComplaints';
 import WardenDashboard from '../pages/WardenDashboard';
+import StudentFees from '../pages/StudentFees';
+import StudentPayments from '../pages/StudentPayments';
+import WardenFees from '../pages/WardenFees';
 import RoomAllocation from '../pages/RoomAllocation';
 import WardenComplaints from '../pages/WardenComplaints';
 import StudentOutpass from '../pages/StudentOutpass';
@@ -97,10 +100,26 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/student/fees"
+        element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <StudentFees />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/student/complaints"
         element={
           <ProtectedRoute allowedRoles={['STUDENT']}>
             <StudentComplaints />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/payments"
+        element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <StudentPayments />
           </ProtectedRoute>
         }
       />
@@ -119,6 +138,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['WARDEN']}>
             <WardenDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/warden/fees"
+        element={
+          <ProtectedRoute allowedRoles={['WARDEN']}>
+            <WardenFees />
           </ProtectedRoute>
         }
       />

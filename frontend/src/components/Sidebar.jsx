@@ -11,7 +11,8 @@ const Sidebar = ({ userType }) => {
     { id: 'dashboard', label: 'Dashboard', path: '/student/dashboard' },
     { id: 'profile', label: 'My Profile', isPlaceholder: true },
     { id: 'room', label: 'My Room', isPlaceholder: true },
-    { id: 'fees', label: 'My Fees', isPlaceholder: true },
+    { id: 'fees', label: 'My Fees', path: '/student/fees' },
+    { id: 'payments', label: 'Payment History', path: '/student/payments' },
     { id: 'complaints', label: 'My Complaints', path: '/student/complaints' },
     { id: 'outpass', label: 'My Outpass', path: '/student/outpass' }
   ];
@@ -20,7 +21,7 @@ const Sidebar = ({ userType }) => {
     { id: 'dashboard', label: 'Dashboard', path: '/warden/dashboard' },
     { id: 'rooms', label: 'Rooms', isPlaceholder: true },
     { id: 'allocations', label: 'Allocations', path: '/warden/allocations' },
-    { id: 'fees', label: 'Fees', isPlaceholder: true },
+    { id: 'fees', label: 'Fees', path: '/warden/fees' },
     { id: 'complaints', label: 'Complaints', path: '/warden/complaints' },
     { id: 'outpass', label: 'Outpass', path: '/warden/outpass' },
     { id: 'students', label: 'Students', isPlaceholder: true }

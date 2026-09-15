@@ -6,6 +6,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const wardenRoutes = require('./routes/wardenRoutes');
+const feeRoutes = require('./routes/feeRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const outpassRoutes = require('./routes/outpassRoutes');
 
@@ -32,6 +33,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/warden', wardenRoutes);
+app.use('/api/fees', feeRoutes);
 app.use('/api/room', roomRoutes);
 app.use('/api/outpass', outpassRoutes);
 

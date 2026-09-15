@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { studentAPI } from '../services/api';
+import { studentAPI, feeAPI } from '../services/api';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import DashboardCard from '../components/DashboardCard';
+import { formatCurrency } from '../utils/feeHelpers';
 import '../styles/dashboard.css';
+import '../styles/fees.css';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
+  const [feesSummary, setFeesSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -18,8 +23,21 @@ const StudentDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const response = await studentAPI.getDashboard();
-      setDashboardData(response.data);
+      // Fetch dashboard and fees together. Fees give the true outstanding amount
+      // (based on successful payments) rather than a sum of full fee amounts.
+      const [dashboardRes, feesRes] = await Promise.all([
+        studentAPI.getDashboard(),
+        feeAPI.getMyFees().catch(() => null)
+      ]);
+      setDashboardData(dashboardRes.data);
+      if (feesRes) {
+        const fees = feesRes.data.fees || [];
+        const unpaidCount = fees.filter((f) => Number(f.outstandingAmount) > 0).length;
+        setFeesSummary({
+          totalOutstanding: feesRes.data.totalOutstanding || 0,
+          unpaidCount
+        });
+      }
     } catch (err) {
       console.error('Dashboard fetch error:', err);
       setError('Failed to load dashboard data. Please refresh the page.');
@@ -84,12 +102,32 @@ const StudentDashboard = () => {
               color="primary"
               subtitle={dashboardData?.room ? `Floor ${dashboardData.room.floor}, Bed ${dashboardData.room.bedNumber}` : 'Not allocated'}
             />
-            <DashboardCard
-              title="Pending Fees"
-              value={dashboardData?.summary?.pendingFeesCount || 0}
-              color={dashboardData?.summary?.pendingFeesCount > 0 ? 'warning' : 'success'}
-              subtitle={dashboardData?.summary?.pendingFeesTotal > 0 ? `₹${dashboardData.summary.pendingFeesTotal.toFixed(2)}` : 'All clear'}
-            />
+            <div
+              role="button"
+              tabIndex={0}
+              className="dashboard-card-link"
+              onClick={() => navigate('/student/fees')}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate('/student/fees'); }}
+            >
+              <DashboardCard
+                title="Outstanding Fees"
+                value={
+                  feesSummary
+                    ? (feesSummary.unpaidCount || 0)
+                    : (dashboardData?.summary?.pendingFeesCount || 0)
+                }
+                color={
+                  (feesSummary ? feesSummary.totalOutstanding : dashboardData?.summary?.pendingFeesTotal) > 0
+                    ? 'warning'
+                    : 'success'
+                }
+                subtitle={
+                  feesSummary
+                    ? (feesSummary.totalOutstanding > 0 ? formatCurrency(feesSummary.totalOutstanding) : 'All clear')
+                    : (dashboardData?.summary?.pendingFeesTotal > 0 ? formatCurrency(dashboardData.summary.pendingFeesTotal) : 'All clear')
+                }
+              />
+            </div>
             <DashboardCard
               title="Open Complaints"
               value={dashboardData?.summary?.openComplaintsCount || 0}
