@@ -13,32 +13,30 @@ const Sidebar = ({ userType }) => {
     { id: 'room', label: 'My Room', isPlaceholder: true },
     { id: 'fees', label: 'My Fees', path: '/student/fees' },
     { id: 'payments', label: 'Payment History', path: '/student/payments' },
-    { id: 'complaints', label: 'My Complaints', isPlaceholder: true },
-    { id: 'outpass', label: 'My Outpass', isPlaceholder: true }
+    { id: 'complaints', label: 'My Complaints', path: '/student/complaints' },
+    { id: 'outpass', label: 'My Outpass', path: '/student/outpass' }
   ];
 
   const wardenMenuItems = [
     { id: 'dashboard', label: 'Dashboard', path: '/warden/dashboard' },
     { id: 'rooms', label: 'Rooms', isPlaceholder: true },
-    { id: 'allocations', label: 'Allocations', isPlaceholder: true },
+    { id: 'allocations', label: 'Allocations', path: '/warden/allocations' },
     { id: 'fees', label: 'Fees', path: '/warden/fees' },
-    { id: 'complaints', label: 'Complaints', isPlaceholder: true },
-    { id: 'outpass', label: 'Outpass', isPlaceholder: true },
+    { id: 'complaints', label: 'Complaints', path: '/warden/complaints' },
+    { id: 'outpass', label: 'Outpass', path: '/warden/outpass' },
     { id: 'students', label: 'Students', isPlaceholder: true }
   ];
 
   const menuItems = userType === 'warden' ? wardenMenuItems : studentMenuItems;
 
-  // Active item is derived from the current route (falls back to dashboard).
-  const activeItem =
-    menuItems.find((item) => item.path && location.pathname === item.path)?.id ||
-    'dashboard';
+  // Active item derives from the current route so it stays correct on refresh.
+  const isItemActive = (item) => item.path && location.pathname === item.path;
 
   const handleMenuClick = (item) => {
-    // Navigable items have a `path`; placeholders do nothing yet.
     if (item.path) {
       navigate(item.path);
     }
+    // Placeholder items (other modules) are not yet wired to routes.
   };
 
   const handleLogout = () => {
@@ -85,7 +83,7 @@ const Sidebar = ({ userType }) => {
           {menuItems.map((item) => (
             <li key={item.id}>
               <button
-                className={`sidebar-menu-item ${activeItem === item.id ? 'active' : ''} ${item.isPlaceholder ? 'placeholder' : ''}`}
+                className={`sidebar-menu-item ${isItemActive(item) ? 'active' : ''} ${item.isPlaceholder ? 'placeholder' : ''}`}
                 onClick={() => handleMenuClick(item)}
               >
                 <span className="menu-label">{item.label}</span>

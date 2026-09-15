@@ -9,10 +9,15 @@ import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 import ChangePassword from '../pages/ChangePassword';
 import StudentDashboard from '../pages/StudentDashboard';
+import StudentComplaints from '../pages/StudentComplaints';
 import WardenDashboard from '../pages/WardenDashboard';
 import StudentFees from '../pages/StudentFees';
 import StudentPayments from '../pages/StudentPayments';
 import WardenFees from '../pages/WardenFees';
+import RoomAllocation from '../pages/RoomAllocation';
+import WardenComplaints from '../pages/WardenComplaints';
+import StudentOutpass from '../pages/StudentOutpass';
+import WardenOutpass from '../pages/WardenOutpass';
 
 const AppRoutes = () => {
   const { isAuthenticated, user, loading } = useAuth();
@@ -103,10 +108,26 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/student/complaints"
+        element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <StudentComplaints />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/student/payments"
         element={
           <ProtectedRoute allowedRoles={['STUDENT']}>
             <StudentPayments />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/outpass"
+        element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <StudentOutpass />
           </ProtectedRoute>
         }
       />
@@ -125,6 +146,30 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['WARDEN']}>
             <WardenFees />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/warden/allocations"
+        element={
+          <ProtectedRoute allowedRoles={['WARDEN']}>
+            <RoomAllocation />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/warden/complaints"
+        element={
+          <ProtectedRoute allowedRoles={['WARDEN']}>
+            <WardenComplaints />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/warden/outpass"
+        element={
+          <ProtectedRoute allowedRoles={['WARDEN']}>
+            <WardenOutpass />
           </ProtectedRoute>
         }
       />

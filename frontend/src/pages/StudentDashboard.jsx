@@ -138,7 +138,8 @@ const StudentDashboard = () => {
               title="Pending Outpass"
               value={dashboardData?.summary?.pendingOutpassCount || 0}
               color={dashboardData?.summary?.pendingOutpassCount > 0 ? 'info' : 'success'}
-              subtitle="Awaiting approval"
+              subtitle="View outpass management"
+              to="/student/outpass"
             />
           </section>
 
@@ -178,17 +179,39 @@ const StudentDashboard = () => {
                     <span className="info-value">{dashboardData.room.roomNumber}</span>
                   </div>
                   <div className="info-item">
+                    <span className="info-label">Bed Number</span>
+                    <span className="info-value">{dashboardData.room.bedNumber}</span>
+                  </div>
+                  <div className="info-item">
                     <span className="info-label">Floor</span>
                     <span className="info-value">{dashboardData.room.floor}</span>
                   </div>
+                  {dashboardData.room.roomType && (
+                    <div className="info-item">
+                      <span className="info-label">Room Type</span>
+                      <span className="info-value">{dashboardData.room.roomType}</span>
+                    </div>
+                  )}
                   <div className="info-item">
-                    <span className="info-label">Bed Number</span>
-                    <span className="info-value">{dashboardData.room.bedNumber}</span>
+                    <span className="info-label">Status</span>
+                    <span className="info-value">{dashboardData.room.status || 'ACTIVE'}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">Allocated Date</span>
+                    <span className="info-value">
+                      {dashboardData.room.allocatedDate
+                        ? new Date(dashboardData.room.allocatedDate).toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric'
+                          })
+                        : '--'}
+                    </span>
                   </div>
                 </div>
               ) : (
                 <div className="empty-state">
-                  <p>No room allocated yet</p>
+                  <p>No room has been allocated yet.</p>
                   <span className="empty-hint">Contact the warden for room allocation</span>
                 </div>
               )}
