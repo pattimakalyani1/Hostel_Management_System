@@ -16,6 +16,10 @@ const Sidebar = ({ userType }) => {
       setActiveItem('rooms');
     } else if (path.includes('/allocations')) {
       setActiveItem('allocations');
+    } else if (path.includes('/fees')) {
+      setActiveItem('fees');
+    } else if (path.includes('/payments')) {
+      setActiveItem('payments');
     } else if (path.includes('/complaints')) {
       setActiveItem('complaints');
     } else if (path.includes('/outpass')) {
@@ -26,22 +30,23 @@ const Sidebar = ({ userType }) => {
   }, [location.pathname]);
 
   const studentMenuItems = [
-    { id: 'dashboard',  label: 'Dashboard',     path: '/student/dashboard' },
-    { id: 'profile',    label: 'My Profile',     isPlaceholder: true },
-    { id: 'room',       label: 'My Room',        isPlaceholder: true },
-    { id: 'fees',       label: 'My Fees',        isPlaceholder: true },
-    { id: 'complaints', label: 'My Complaints',  path: '/student/complaints' },
-    { id: 'outpass',    label: 'My Outpass',     path: '/student/outpass' },
+    { id: 'dashboard',  label: 'Dashboard',        path: '/student/dashboard' },
+    { id: 'profile',    label: 'My Profile',        isPlaceholder: true },
+    { id: 'room',       label: 'My Room',           isPlaceholder: true },
+    { id: 'fees',       label: 'My Fees',           path: '/student/fees' },
+    { id: 'payments',   label: 'Payment History',   path: '/student/payments' },
+    { id: 'complaints', label: 'My Complaints',     path: '/student/complaints' },
+    { id: 'outpass',    label: 'My Outpass',        path: '/student/outpass' },
   ];
 
   const wardenMenuItems = [
-    { id: 'dashboard',   label: 'Dashboard',    path: '/warden/dashboard' },
-    { id: 'rooms',       label: 'Rooms',        path: '/warden/rooms' },
-    { id: 'allocations', label: 'Allocations',  path: '/warden/allocations' },
-    { id: 'fees',        label: 'Fees',         isPlaceholder: true },
-    { id: 'complaints',  label: 'Complaints',   path: '/warden/complaints' },
-    { id: 'outpass',     label: 'Outpass',      path: '/warden/outpass' },
-    { id: 'students',    label: 'Students',     isPlaceholder: true },
+    { id: 'dashboard',   label: 'Dashboard',   path: '/warden/dashboard' },
+    { id: 'rooms',       label: 'Rooms',       path: '/warden/rooms' },
+    { id: 'allocations', label: 'Allocations', path: '/warden/allocations' },
+    { id: 'fees',        label: 'Fees',        path: '/warden/fees' },
+    { id: 'complaints',  label: 'Complaints',  path: '/warden/complaints' },
+    { id: 'outpass',     label: 'Outpass',     path: '/warden/outpass' },
+    { id: 'students',    label: 'Students',    isPlaceholder: true },
   ];
 
   const menuItems = userType === 'warden' ? wardenMenuItems : studentMenuItems;
