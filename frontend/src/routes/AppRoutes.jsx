@@ -11,6 +11,7 @@ import ChangePassword from '../pages/ChangePassword';
 import StudentDashboard from '../pages/StudentDashboard';
 import StudentComplaints from '../pages/StudentComplaints';
 import WardenDashboard from '../pages/WardenDashboard';
+import RoomAllocation from '../pages/RoomAllocation';
 import WardenComplaints from '../pages/WardenComplaints';
 import StudentOutpass from '../pages/StudentOutpass';
 import WardenOutpass from '../pages/WardenOutpass';
@@ -118,6 +119,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['WARDEN']}>
             <WardenDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/warden/allocations"
+        element={
+          <ProtectedRoute allowedRoles={['WARDEN']}>
+            <RoomAllocation />
           </ProtectedRoute>
         }
       />

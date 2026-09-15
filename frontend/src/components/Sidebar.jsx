@@ -19,7 +19,7 @@ const Sidebar = ({ userType }) => {
   const wardenMenuItems = [
     { id: 'dashboard', label: 'Dashboard', path: '/warden/dashboard' },
     { id: 'rooms', label: 'Rooms', isPlaceholder: true },
-    { id: 'allocations', label: 'Allocations', isPlaceholder: true },
+    { id: 'allocations', label: 'Allocations', path: '/warden/allocations' },
     { id: 'fees', label: 'Fees', isPlaceholder: true },
     { id: 'complaints', label: 'Complaints', path: '/warden/complaints' },
     { id: 'outpass', label: 'Outpass', path: '/warden/outpass' },
