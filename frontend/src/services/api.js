@@ -52,12 +52,37 @@ export const authAPI = {
 
 // Student API calls
 export const studentAPI = {
-  getDashboard: () => api.get('/student/dashboard')
+  getDashboard: () => api.get('/student/dashboard'),
+  getComplaints: (params) => api.get('/student/complaints', { params }),
+  createComplaint: (data) => api.post('/student/complaints', data),
+  getComplaintById: (id) => api.get(`/student/complaints/${id}`)
 };
 
 // Warden API calls
 export const wardenAPI = {
-  getDashboard: () => api.get('/warden/dashboard')
+  getDashboard: () => api.get('/warden/dashboard'),
+  getComplaints: (params) => api.get('/warden/complaints', { params }),
+  getComplaintById: (id) => api.get(`/warden/complaints/${id}`),
+  updateComplaint: (id, data) => api.put(`/warden/complaints/${id}`, data),
+  getComplaintStats: () => api.get('/warden/complaints/stats')
+};
+
+// Outpass API calls (Module 6)
+export const outpassAPI = {
+  // Student
+  create: (data) => api.post('/outpass', data),
+  getMine: () => api.get('/outpass/my'),
+  // Warden
+  getPending: () => api.get('/outpass/pending'),
+  getApproved: () => api.get('/outpass/approved'),
+  getOverdue: () => api.get('/outpass/overdue'),
+  getAll: () => api.get('/outpass/all'),
+  // Shared
+  getById: (id) => api.get(`/outpass/${id}`),
+  // Warden actions
+  approve: (id, data = {}) => api.put(`/outpass/${id}/approve`, data),
+  reject: (id, wardenComment) => api.put(`/outpass/${id}/reject`, { wardenComment }),
+  markReturned: (id) => api.put(`/outpass/${id}/return`)
 };
 
 // Room Allocation API calls (Warden/Admin)

@@ -7,6 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const wardenRoutes = require('./routes/wardenRoutes');
 const roomRoutes = require('./routes/roomRoutes');
+const outpassRoutes = require('./routes/outpassRoutes');
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/warden', wardenRoutes);
 app.use('/api/room', roomRoutes);
+app.use('/api/outpass', outpassRoutes);
 
 // 404 handler
 app.use((req, res) => {

@@ -100,7 +100,8 @@ const WardenDashboard = () => {
               title="Pending Outpass"
               value={dashboardData?.summary?.pendingOutpassCount || 0}
               color={dashboardData?.summary?.pendingOutpassCount > 0 ? 'warning' : 'success'}
-              subtitle="Awaiting approval"
+              subtitle="Review requests"
+              to="/warden/outpass"
             />
             <DashboardCard
               title="Occupancy Rate"
