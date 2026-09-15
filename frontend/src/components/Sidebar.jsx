@@ -7,7 +7,11 @@ const Sidebar = ({ userType }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout, user } = useAuth();
-  const [activeItem, setActiveItem] = useState('dashboard');
+  const routeToItem = () => {
+    if (location.pathname.startsWith('/warden/allocations')) return 'allocations';
+    return 'dashboard';
+  };
+  const [activeItem, setActiveItem] = useState(routeToItem());
 
   const studentMenuItems = [
     { id: 'dashboard', label: 'Dashboard', isActive: true },
@@ -21,7 +25,7 @@ const Sidebar = ({ userType }) => {
   const wardenMenuItems = [
     { id: 'dashboard', label: 'Dashboard', isActive: true },
     { id: 'rooms', label: 'Rooms', isPlaceholder: true },
-    { id: 'allocations', label: 'Allocations', isPlaceholder: true },
+    { id: 'allocations', label: 'Allocations' },
     { id: 'fees', label: 'Fees', isPlaceholder: true },
     { id: 'complaints', label: 'Complaints', isPlaceholder: true },
     { id: 'outpass', label: 'Outpass', isPlaceholder: true },
@@ -31,6 +35,10 @@ const Sidebar = ({ userType }) => {
   const menuItems = userType === 'warden' ? wardenMenuItems : studentMenuItems;
 
   const handleMenuClick = (item) => {
+    if (item.isPlaceholder) {
+      setActiveItem(item.id);
+      return;
+    }
     if (item.id === 'dashboard') {
       setActiveItem('dashboard');
       if (userType === 'warden') {
@@ -38,6 +46,9 @@ const Sidebar = ({ userType }) => {
       } else {
         navigate('/student/dashboard');
       }
+    } else if (item.id === 'allocations' && userType === 'warden') {
+      setActiveItem('allocations');
+      navigate('/warden/allocations');
     } else {
       setActiveItem(item.id);
     }

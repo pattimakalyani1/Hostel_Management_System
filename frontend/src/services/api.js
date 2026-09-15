@@ -60,4 +60,14 @@ export const wardenAPI = {
   getDashboard: () => api.get('/warden/dashboard')
 };
 
+// Room Allocation API calls (Warden/Admin)
+export const roomAPI = {
+  getRooms: () => api.get('/room'),
+  getRoom: (id) => api.get(`/room/${id}`),
+  searchStudents: (q) => api.get('/room/students/search', { params: { q } }),
+  getAllocations: (status) => api.get('/room/allocations', { params: status ? { status } : {} }),
+  allocateBed: (data) => api.post('/room/allocate', data),
+  vacateAllocation: (id) => api.put(`/room/allocations/${id}/vacate`)
+};
+
 export default api;
