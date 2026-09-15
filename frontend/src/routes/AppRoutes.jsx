@@ -10,6 +10,8 @@ import ResetPassword from '../pages/ResetPassword';
 import ChangePassword from '../pages/ChangePassword';
 import StudentDashboard from '../pages/StudentDashboard';
 import WardenDashboard from '../pages/WardenDashboard';
+import RoomsPage from '../pages/rooms/RoomsPage';
+import RoomDetailPage from '../pages/rooms/RoomDetailPage';
 
 const AppRoutes = () => {
   const { isAuthenticated, user, loading } = useAuth();
@@ -98,6 +100,22 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['WARDEN']}>
             <WardenDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/warden/rooms"
+        element={
+          <ProtectedRoute allowedRoles={['WARDEN']}>
+            <RoomsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/warden/rooms/:id"
+        element={
+          <ProtectedRoute allowedRoles={['WARDEN']}>
+            <RoomDetailPage />
           </ProtectedRoute>
         }
       />

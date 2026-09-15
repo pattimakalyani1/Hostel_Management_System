@@ -102,26 +102,30 @@ model Student {
 }
 
 model Room {
-  id          Int      @id @default(autoincrement())
-  roomNumber  String   @unique
-  floor       Int
-  capacity    Int
-  roomType    String?
-  status      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  roomNumber   String   @unique
+  floor        Int
+  capacity     Int
+  sharingType  Int      @default(4)   // 1 | 2 | 3 | 4
+  roomType     String?
+  description  String?
+  status       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  beds        Bed[]
-  allocations Allocation[]
+  beds         Bed[]
+  allocations  Allocation[]
 }
 
 model Bed {
-  id          Int       @id @default(autoincrement())
-  roomId      Int
-  bedNumber   String
-  status      BedStatus @default(AVAILABLE)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime @updatedAt
+  id                 Int       @id @default(autoincrement())
+  roomId             Int
+  bedNumber          String
+  status             BedStatus @default(AVAILABLE)
+  maintenanceReason  String?
+  maintenanceDate    DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
   room        Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
   allocations Allocation[]

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/sidebar.css';
@@ -9,35 +9,45 @@ const Sidebar = ({ userType }) => {
   const { logout, user } = useAuth();
   const [activeItem, setActiveItem] = useState('dashboard');
 
+  // Keep active item in sync with the current URL
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.startsWith('/warden/rooms') || path.startsWith('/student/room')) {
+      setActiveItem('rooms');
+    } else if (path.includes('/dashboard')) {
+      setActiveItem('dashboard');
+    }
+  }, [location.pathname]);
+
   const studentMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', isActive: true },
-    { id: 'profile', label: 'My Profile', isPlaceholder: true },
-    { id: 'room', label: 'My Room', isPlaceholder: true },
-    { id: 'fees', label: 'My Fees', isPlaceholder: true },
-    { id: 'complaints', label: 'My Complaints', isPlaceholder: true },
-    { id: 'outpass', label: 'My Outpass', isPlaceholder: true }
+    { id: 'dashboard', label: 'Dashboard', path: '/student/dashboard', isActive: true },
+    { id: 'profile',   label: 'My Profile',    isPlaceholder: true },
+    { id: 'room',      label: 'My Room',       isPlaceholder: true },
+    { id: 'fees',      label: 'My Fees',       isPlaceholder: true },
+    { id: 'complaints',label: 'My Complaints', isPlaceholder: true },
+    { id: 'outpass',   label: 'My Outpass',    isPlaceholder: true }
   ];
 
   const wardenMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', isActive: true },
-    { id: 'rooms', label: 'Rooms', isPlaceholder: true },
+    { id: 'dashboard', label: 'Dashboard',   path: '/warden/dashboard', isActive: true },
+    { id: 'rooms',     label: 'Rooms',       path: '/warden/rooms' },
     { id: 'allocations', label: 'Allocations', isPlaceholder: true },
-    { id: 'fees', label: 'Fees', isPlaceholder: true },
-    { id: 'complaints', label: 'Complaints', isPlaceholder: true },
-    { id: 'outpass', label: 'Outpass', isPlaceholder: true },
-    { id: 'students', label: 'Students', isPlaceholder: true }
+    { id: 'fees',      label: 'Fees',        isPlaceholder: true },
+    { id: 'complaints',label: 'Complaints',  isPlaceholder: true },
+    { id: 'outpass',   label: 'Outpass',     isPlaceholder: true },
+    { id: 'students',  label: 'Students',    isPlaceholder: true }
   ];
 
   const menuItems = userType === 'warden' ? wardenMenuItems : studentMenuItems;
 
   const handleMenuClick = (item) => {
-    if (item.id === 'dashboard') {
+    if (item.isPlaceholder) return; // placeholder items do nothing
+    if (item.path) {
+      setActiveItem(item.id);
+      navigate(item.path);
+    } else if (item.id === 'dashboard') {
       setActiveItem('dashboard');
-      if (userType === 'warden') {
-        navigate('/warden/dashboard');
-      } else {
-        navigate('/student/dashboard');
-      }
+      navigate(userType === 'warden' ? '/warden/dashboard' : '/student/dashboard');
     } else {
       setActiveItem(item.id);
     }
