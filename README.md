@@ -5,18 +5,30 @@ A full-stack hostel management application with authentication and dashboard UI 
 ## Technology Stack
 
 ### Frontend
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/main
 - React.js with Vite
 - React Router for navigation
 - Axios for API calls
 - CSS (no frameworks)
 
 ### Backend
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/main
 - Node.js with Express.js
 - JWT for authentication
 - bcryptjs for password hashing
 - express-validator for input validation
 
 ### Database
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/main
 - PostgreSQL
 - Prisma ORM
 
@@ -229,6 +241,10 @@ Register a new student account through the registration page.
 ## Features Implemented
 
 ### Authentication
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/main
 - ✅ Student registration
 - ✅ Student/Warden login
 - ✅ JWT-based authentication
@@ -240,12 +256,20 @@ Register a new student account through the registration page.
 - ✅ Change password
 
 ### Student Dashboard
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/main
 - ✅ Welcome message
 - ✅ Profile information display
 - ✅ Room allocation status
 - ✅ Summary cards (Fees, Complaints, Outpass)
 
 ### Warden Dashboard
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/main
 - ✅ Overview statistics
 - ✅ Total students count
 - ✅ Room/Bed statistics
@@ -253,6 +277,10 @@ Register a new student account through the registration page.
 - ✅ Occupancy rate
 
 ### UI/UX
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/main
 - ✅ Responsive design
 - ✅ Professional sidebar navigation
 - ✅ Dashboard cards
@@ -265,6 +293,10 @@ Register a new student account through the registration page.
 The following sidebar items are UI placeholders for future team implementation:
 
 ### Student Sidebar
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/main
 - My Profile
 - My Room
 - My Fees
@@ -272,6 +304,10 @@ The following sidebar items are UI placeholders for future team implementation:
 - My Outpass
 
 ### Warden Sidebar
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/main
 - Rooms
 - Allocations
 - Fees

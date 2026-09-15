@@ -14,7 +14,7 @@ const Sidebar = ({ userType }) => {
     { id: 'profile', label: 'My Profile', isPlaceholder: true },
     { id: 'room', label: 'My Room', isPlaceholder: true },
     { id: 'fees', label: 'My Fees', isPlaceholder: true },
-    { id: 'complaints', label: 'My Complaints', isPlaceholder: true },
+    { id: 'complaints', label: 'My Complaints', isActive: true },
     { id: 'outpass', label: 'My Outpass', isPlaceholder: true }
   ];
 
@@ -23,7 +23,7 @@ const Sidebar = ({ userType }) => {
     { id: 'rooms', label: 'Rooms', isPlaceholder: true },
     { id: 'allocations', label: 'Allocations', isPlaceholder: true },
     { id: 'fees', label: 'Fees', isPlaceholder: true },
-    { id: 'complaints', label: 'Complaints', isPlaceholder: true },
+    { id: 'complaints', label: 'Complaints', isActive: true },
     { id: 'outpass', label: 'Outpass', isPlaceholder: true },
     { id: 'students', label: 'Students', isPlaceholder: true }
   ];
@@ -31,15 +31,23 @@ const Sidebar = ({ userType }) => {
   const menuItems = userType === 'warden' ? wardenMenuItems : studentMenuItems;
 
   const handleMenuClick = (item) => {
+    if (item.isPlaceholder) {
+      setActiveItem(item.id);
+      return;
+    }
+    setActiveItem(item.id);
     if (item.id === 'dashboard') {
-      setActiveItem('dashboard');
       if (userType === 'warden') {
         navigate('/warden/dashboard');
       } else {
         navigate('/student/dashboard');
       }
-    } else {
-      setActiveItem(item.id);
+    } else if (item.id === 'complaints') {
+      if (userType === 'warden') {
+        navigate('/warden/complaints');
+      } else {
+        navigate('/student/complaints');
+      }
     }
   };
 

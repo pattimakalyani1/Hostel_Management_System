@@ -9,7 +9,9 @@ import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 import ChangePassword from '../pages/ChangePassword';
 import StudentDashboard from '../pages/StudentDashboard';
+import StudentComplaints from '../pages/StudentComplaints';
 import WardenDashboard from '../pages/WardenDashboard';
+import WardenComplaints from '../pages/WardenComplaints';
 
 const AppRoutes = () => {
   const { isAuthenticated, user, loading } = useAuth();
@@ -91,6 +93,14 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/student/complaints"
+        element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <StudentComplaints />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Protected Routes - Warden */}
       <Route
@@ -98,6 +108,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['WARDEN']}>
             <WardenDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/warden/complaints"
+        element={
+          <ProtectedRoute allowedRoles={['WARDEN']}>
+            <WardenComplaints />
           </ProtectedRoute>
         }
       />
