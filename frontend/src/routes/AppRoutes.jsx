@@ -9,7 +9,9 @@ import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 import ChangePassword from '../pages/ChangePassword';
 import StudentDashboard from '../pages/StudentDashboard';
+import StudentComplaints from '../pages/StudentComplaints';
 import WardenDashboard from '../pages/WardenDashboard';
+import WardenComplaints from '../pages/WardenComplaints';
 import StudentOutpass from '../pages/StudentOutpass';
 import WardenOutpass from '../pages/WardenOutpass';
 
@@ -94,6 +96,14 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/student/complaints"
+        element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <StudentComplaints />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/student/outpass"
         element={
           <ProtectedRoute allowedRoles={['STUDENT']}>
@@ -108,6 +118,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['WARDEN']}>
             <WardenDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/warden/complaints"
+        element={
+          <ProtectedRoute allowedRoles={['WARDEN']}>
+            <WardenComplaints />
           </ProtectedRoute>
         }
       />
