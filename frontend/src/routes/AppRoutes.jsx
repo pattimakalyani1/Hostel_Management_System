@@ -9,6 +9,7 @@ import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 import ChangePassword from '../pages/ChangePassword';
 import StudentDashboard from '../pages/StudentDashboard';
+import StudentProfile from '../pages/StudentProfile';
 import StudentComplaints from '../pages/StudentComplaints';
 import StudentOutpass from '../pages/StudentOutpass';
 import StudentFees from '../pages/StudentFees';
@@ -44,13 +45,13 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* ── Public Routes ── */}
+      {/* Public Routes */}
       <Route path="/login"           element={<PublicRoute><Login /></PublicRoute>} />
       <Route path="/register"        element={<PublicRoute><StudentRegister /></PublicRoute>} />
       <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
       <Route path="/reset-password"  element={<PublicRoute><ResetPassword /></PublicRoute>} />
 
-      {/* ── Change Password (both roles) ── */}
+      {/* Change Password (both roles) */}
       <Route
         path="/change-password"
         element={
@@ -60,10 +61,14 @@ const AppRoutes = () => {
         }
       />
 
-      {/* ── Student Routes ── */}
+      {/* Student Routes */}
       <Route
         path="/student/dashboard"
         element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentDashboard /></ProtectedRoute>}
+      />
+      <Route
+        path="/student/profile"
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentProfile /></ProtectedRoute>}
       />
       <Route
         path="/student/complaints"
@@ -82,12 +87,11 @@ const AppRoutes = () => {
         element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentPayments /></ProtectedRoute>}
       />
 
-      {/* ── Warden Routes ── */}
+      {/* Warden Routes */}
       <Route
         path="/warden/dashboard"
         element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenDashboard /></ProtectedRoute>}
       />
-      {/* Room Management */}
       <Route
         path="/warden/rooms"
         element={<ProtectedRoute allowedRoles={['WARDEN']}><RoomsPage /></ProtectedRoute>}
@@ -96,34 +100,28 @@ const AppRoutes = () => {
         path="/warden/rooms/:id"
         element={<ProtectedRoute allowedRoles={['WARDEN']}><RoomDetailPage /></ProtectedRoute>}
       />
-      {/* Room Allocation */}
       <Route
         path="/warden/allocations"
         element={<ProtectedRoute allowedRoles={['WARDEN']}><RoomAllocation /></ProtectedRoute>}
       />
-      {/* Fees & Payments */}
       <Route
         path="/warden/fees"
         element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenFees /></ProtectedRoute>}
       />
-      {/* Complaints */}
       <Route
         path="/warden/complaints"
         element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenComplaints /></ProtectedRoute>}
       />
-      {/* Outpass */}
       <Route
         path="/warden/outpass"
         element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenOutpass /></ProtectedRoute>}
       />
-
-      {/* Students */}
       <Route
         path="/warden/students"
         element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenStudents /></ProtectedRoute>}
       />
 
-      {/* ── Root redirect ── */}
+      {/* Root redirect */}
       <Route
         path="/"
         element={
@@ -133,7 +131,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* ── Catch-all ── */}
+      {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
