@@ -9,7 +9,19 @@ import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 import ChangePassword from '../pages/ChangePassword';
 import StudentDashboard from '../pages/StudentDashboard';
+import StudentProfile from '../pages/StudentProfile';
+import StudentComplaints from '../pages/StudentComplaints';
+import StudentOutpass from '../pages/StudentOutpass';
+import StudentFees from '../pages/StudentFees';
+import StudentPayments from '../pages/StudentPayments';
 import WardenDashboard from '../pages/WardenDashboard';
+import WardenComplaints from '../pages/WardenComplaints';
+import WardenOutpass from '../pages/WardenOutpass';
+import WardenFees from '../pages/WardenFees';
+import WardenStudents from '../pages/WardenStudents';
+import RoomsPage from '../pages/rooms/RoomsPage';
+import RoomDetailPage from '../pages/rooms/RoomDetailPage';
+import RoomAllocation from '../pages/RoomAllocation';
 
 const AppRoutes = () => {
   const { isAuthenticated, user, loading } = useAuth();
@@ -85,21 +97,61 @@ const AppRoutes = () => {
       {/* Protected Routes - Student */}
       <Route
         path="/student/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={['STUDENT']}>
-            <StudentDashboard />
-          </ProtectedRoute>
-        }
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentDashboard /></ProtectedRoute>}
+      />
+      <Route
+        path="/student/profile"
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentProfile /></ProtectedRoute>}
+      />
+      <Route
+        path="/student/complaints"
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentComplaints /></ProtectedRoute>}
+      />
+      <Route
+        path="/student/outpass"
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentOutpass /></ProtectedRoute>}
+      />
+      <Route
+        path="/student/fees"
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentFees /></ProtectedRoute>}
+      />
+      <Route
+        path="/student/payments"
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentPayments /></ProtectedRoute>}
       />
 
       {/* Protected Routes - Warden */}
       <Route
         path="/warden/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={['WARDEN']}>
-            <WardenDashboard />
-          </ProtectedRoute>
-        }
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenDashboard /></ProtectedRoute>}
+      />
+      <Route
+        path="/warden/rooms"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><RoomsPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/warden/rooms/:id"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><RoomDetailPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/warden/allocations"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><RoomAllocation /></ProtectedRoute>}
+      />
+      <Route
+        path="/warden/fees"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenFees /></ProtectedRoute>}
+      />
+      <Route
+        path="/warden/complaints"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenComplaints /></ProtectedRoute>}
+      />
+      <Route
+        path="/warden/outpass"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenOutpass /></ProtectedRoute>}
+      />
+      <Route
+        path="/warden/students"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenStudents /></ProtectedRoute>}
       />
 
       {/* Root redirect */}

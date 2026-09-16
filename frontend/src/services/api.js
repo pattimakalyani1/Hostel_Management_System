@@ -52,7 +52,13 @@ export const authAPI = {
 
 // Student API calls
 export const studentAPI = {
-  getDashboard: () => api.get('/student/dashboard')
+  getDashboard: () => api.get('/student/dashboard'),
+  getProfile: () => api.get('/student/profile'),
+  updateProfile: (data) => api.put('/student/profile', data),
+  getRoom: () => api.get('/student/room'),
+  getComplaints: (params) => api.get('/student/complaints', { params }),
+  createComplaint: (data) => api.post('/student/complaints', data),
+  getComplaintById: (id) => api.get(`/student/complaints/${id}`)
 };
 
 // Warden API calls

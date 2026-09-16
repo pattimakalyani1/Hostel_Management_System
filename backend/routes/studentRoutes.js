@@ -12,4 +12,11 @@ router.use(authorizeRoles('STUDENT'));
 // Student dashboard
 router.get('/dashboard', studentController.getDashboard);
 
+// Student profile
+router.get('/profile', studentController.getProfile);
+router.put('/profile', studentController.updateProfile);
+
+// Student room
+router.get('/room', studentController.getRoom);
+
 module.exports = router;

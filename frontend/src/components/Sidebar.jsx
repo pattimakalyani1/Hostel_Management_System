@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/sidebar.css';
@@ -9,38 +9,54 @@ const Sidebar = ({ userType }) => {
   const { logout, user } = useAuth();
   const [activeItem, setActiveItem] = useState('dashboard');
 
+  // Keep active item in sync with the current URL
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.includes('/profile')) {
+      setActiveItem('profile');
+    } else if (path.startsWith('/warden/rooms') || path.startsWith('/student/room')) {
+      setActiveItem('rooms');
+    } else if (path.includes('/allocations')) {
+      setActiveItem('allocations');
+    } else if (path.includes('/fees')) {
+      setActiveItem('fees');
+    } else if (path.includes('/payments')) {
+      setActiveItem('payments');
+    } else if (path.includes('/complaints')) {
+      setActiveItem('complaints');
+    } else if (path.includes('/outpass')) {
+      setActiveItem('outpass');
+    } else if (path.includes('/students')) {
+      setActiveItem('students');
+    } else if (path.includes('/dashboard')) {
+      setActiveItem('dashboard');
+    }
+  }, [location.pathname]);
+
   const studentMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', isActive: true },
-    { id: 'profile', label: 'My Profile', isPlaceholder: true },
-    { id: 'room', label: 'My Room', isPlaceholder: true },
-    { id: 'fees', label: 'My Fees', isPlaceholder: true },
-    { id: 'complaints', label: 'My Complaints', isPlaceholder: true },
-    { id: 'outpass', label: 'My Outpass', isPlaceholder: true }
+    { id: 'dashboard',  label: 'Dashboard',        path: '/student/dashboard' },
+    { id: 'profile',    label: 'My Profile',       path: '/student/profile' },
+    { id: 'fees',       label: 'My Fees',          path: '/student/fees' },
+    { id: 'payments',   label: 'Payment History',  path: '/student/payments' },
+    { id: 'complaints', label: 'My Complaints',    path: '/student/complaints' },
+    { id: 'outpass',    label: 'My Outpass',       path: '/student/outpass' },
   ];
 
   const wardenMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', isActive: true },
-    { id: 'rooms', label: 'Rooms', isPlaceholder: true },
-    { id: 'allocations', label: 'Allocations', isPlaceholder: true },
-    { id: 'fees', label: 'Fees', isPlaceholder: true },
-    { id: 'complaints', label: 'Complaints', isPlaceholder: true },
-    { id: 'outpass', label: 'Outpass', isPlaceholder: true },
-    { id: 'students', label: 'Students', isPlaceholder: true }
+    { id: 'dashboard', label: 'Dashboard', path: '/warden/dashboard' },
+    { id: 'rooms', label: 'Rooms', path: '/warden/rooms' },
+    { id: 'allocations', label: 'Allocations', path: '/warden/allocations' },
+    { id: 'fees', label: 'Fees', path: '/warden/fees' },
+    { id: 'complaints', label: 'Complaints', path: '/warden/complaints' },
+    { id: 'outpass', label: 'Outpass', path: '/warden/outpass' },
+    { id: 'students', label: 'Students', path: '/warden/students' }
   ];
 
   const menuItems = userType === 'warden' ? wardenMenuItems : studentMenuItems;
 
   const handleMenuClick = (item) => {
-    if (item.id === 'dashboard') {
-      setActiveItem('dashboard');
-      if (userType === 'warden') {
-        navigate('/warden/dashboard');
-      } else {
-        navigate('/student/dashboard');
-      }
-    } else {
-      setActiveItem(item.id);
-    }
+    setActiveItem(item.id);
+    navigate(item.path);
   };
 
   const handleLogout = () => {
@@ -87,11 +103,10 @@ const Sidebar = ({ userType }) => {
           {menuItems.map((item) => (
             <li key={item.id}>
               <button
-                className={`sidebar-menu-item ${activeItem === item.id ? 'active' : ''} ${item.isPlaceholder ? 'placeholder' : ''}`}
+                className={`sidebar-menu-item ${activeItem === item.id ? 'active' : ''}`}
                 onClick={() => handleMenuClick(item)}
               >
                 <span className="menu-label">{item.label}</span>
-                {item.isPlaceholder && <span className="menu-badge">Soon</span>}
               </button>
             </li>
           ))}
