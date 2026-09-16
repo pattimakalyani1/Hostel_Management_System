@@ -24,6 +24,8 @@ const Sidebar = ({ userType }) => {
       setActiveItem('complaints');
     } else if (path.includes('/outpass')) {
       setActiveItem('outpass');
+    } else if (path.includes('/students')) {
+      setActiveItem('students');
     } else if (path.includes('/dashboard')) {
       setActiveItem('dashboard');
     }
@@ -46,7 +48,7 @@ const Sidebar = ({ userType }) => {
     { id: 'fees',        label: 'Fees',        path: '/warden/fees' },
     { id: 'complaints',  label: 'Complaints',  path: '/warden/complaints' },
     { id: 'outpass',     label: 'Outpass',     path: '/warden/outpass' },
-    { id: 'students',    label: 'Students',    isPlaceholder: true },
+    { id: 'students',    label: 'Students',    path: '/warden/students' },
   ];
 
   const menuItems = userType === 'warden' ? wardenMenuItems : studentMenuItems;

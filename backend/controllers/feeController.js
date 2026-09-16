@@ -1,6 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+const prisma = require('../utils/prisma');
 
 // Valid PaymentMethod enum values (mirrors the Prisma schema).
 const VALID_PAYMENT_METHODS = ['CASH', 'UPI', 'CARD', 'ONLINE'];

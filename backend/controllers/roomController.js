@@ -1,6 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+const prisma = require('../utils/prisma');
 
 // ---------------------------------------------------------------------------
 // Fee configuration – single source of truth
@@ -175,8 +173,11 @@ const getRooms = async (req, res, next) => {
     }
 
     res.json({
-      rooms: formatted,
-      stats: {
+      rooms: formatted.map((r, i) => ({
+        ...r,
+        beds: rooms[i].beds.map(formatBed)
+      })),
+      summary: {
         totalRooms, availableRooms, partiallyOccupied, fullRooms, maintenanceRooms,
         totalBeds, occupiedBeds, availableBeds, maintenanceBeds,
       }
@@ -415,6 +416,175 @@ const getFeeConfig = async (req, res) => {
   });
 };
 
+// ---------------------------------------------------------------------------
+// GET /api/rooms/allocations?status=ACTIVE|VACATED
+// ---------------------------------------------------------------------------
+const getAllocations = async (req, res, next) => {
+  try {
+    const { status } = req.query;
+    const where = {};
+    if (status && status !== 'ALL') {
+      where.status = status.toUpperCase();
+    }
+
+    const allocations = await prisma.allocation.findMany({
+      where,
+      include: {
+        student: { select: { name: true } },
+        room: { select: { roomNumber: true, floor: true } },
+        bed: { select: { bedNumber: true } }
+      },
+      orderBy: { allocatedDate: 'desc' }
+    });
+
+    res.json({
+      allocations: allocations.map(a => ({
+        id: a.id,
+        studentName: a.student.name,
+        roomNumber: a.room.roomNumber,
+        floor: a.room.floor,
+        bedNumber: a.bed.bedNumber,
+        allocatedDate: a.allocatedDate,
+        vacatedDate: a.vacatedDate,
+        status: a.status
+      }))
+    });
+  } catch (error) {
+    console.error('Get allocations error:', error);
+    next(error);
+  }
+};
+
+// ---------------------------------------------------------------------------
+// GET /api/rooms/students/search?q=...
+// ---------------------------------------------------------------------------
+const searchStudents = async (req, res, next) => {
+  try {
+    const { q } = req.query;
+    if (!q || q.trim().length < 1) {
+      return res.json({ students: [] });
+    }
+
+    const students = await prisma.student.findMany({
+      where: {
+        user: { isActive: true },
+        OR: [
+          { name: { contains: q, mode: 'insensitive' } },
+          { phone: { contains: q, mode: 'insensitive' } },
+          { user: { email: { contains: q, mode: 'insensitive' } } }
+        ]
+      },
+      include: {
+        user: { select: { email: true } },
+        allocations: {
+          where: { status: 'ACTIVE' },
+          include: {
+            room: { select: { roomNumber: true } },
+            bed: { select: { bedNumber: true } }
+          },
+          take: 1
+        }
+      },
+      take: 10
+    });
+
+    res.json({
+      students: students.map(s => {
+        const activeAlloc = s.allocations[0] || null;
+        return {
+          id: s.id,
+          name: s.name,
+          email: s.user.email,
+          hasActiveAllocation: !!activeAlloc,
+          currentAllocation: activeAlloc ? {
+            roomNumber: activeAlloc.room.roomNumber,
+            bedNumber: activeAlloc.bed.bedNumber
+          } : null
+        };
+      })
+    });
+  } catch (error) {
+    console.error('Search students error:', error);
+    next(error);
+  }
+};
+
+// ---------------------------------------------------------------------------
+// POST /api/rooms/allocate  { studentId, roomId, bedId }
+// ---------------------------------------------------------------------------
+const allocateBed = async (req, res, next) => {
+  try {
+    const { studentId, roomId, bedId } = req.body;
+
+    // Validate student exists and has no active allocation
+    const student = await prisma.student.findUnique({
+      where: { id: studentId },
+      include: { allocations: { where: { status: 'ACTIVE' } } }
+    });
+    if (!student) return res.status(404).json({ message: 'Student not found.' });
+    if (student.allocations.length > 0) {
+      return res.status(400).json({ message: 'Student already has an active bed allocation.' });
+    }
+
+    // Validate bed exists and is available
+    const bed = await prisma.bed.findFirst({
+      where: { id: bedId, roomId },
+      include: { allocations: { where: { status: 'ACTIVE' } } }
+    });
+    if (!bed) return res.status(404).json({ message: 'Bed not found in this room.' });
+    if (bed.status !== 'AVAILABLE') {
+      return res.status(400).json({ message: `Bed is currently ${bed.status}.` });
+    }
+
+    // Create allocation and update bed status in a transaction
+    const allocation = await prisma.$transaction(async (tx) => {
+      const alloc = await tx.allocation.create({
+        data: { studentId, roomId, bedId, status: 'ACTIVE', allocatedDate: new Date() }
+      });
+      await tx.bed.update({ where: { id: bedId }, data: { status: 'OCCUPIED' } });
+      return alloc;
+    });
+
+    res.status(201).json({ message: 'Bed allocated successfully.', allocation });
+  } catch (error) {
+    console.error('Allocate bed error:', error);
+    next(error);
+  }
+};
+
+// ---------------------------------------------------------------------------
+// PUT /api/rooms/allocations/:id/vacate
+// ---------------------------------------------------------------------------
+const vacateAllocation = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const allocation = await prisma.allocation.findUnique({
+      where: { id: parseInt(id) }
+    });
+    if (!allocation) return res.status(404).json({ message: 'Allocation not found.' });
+    if (allocation.status !== 'ACTIVE') {
+      return res.status(400).json({ message: 'Allocation is not active.' });
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.allocation.update({
+        where: { id: parseInt(id) },
+        data: { status: 'VACATED', vacatedDate: new Date() }
+      });
+      await tx.bed.update({
+        where: { id: allocation.bedId },
+        data: { status: 'AVAILABLE' }
+      });
+    });
+
+    res.json({ message: 'Bed vacated successfully.' });
+  } catch (error) {
+    console.error('Vacate allocation error:', error);
+    next(error);
+  }
+};
+
 module.exports = {
   getRooms,
   getRoomById,
@@ -423,4 +593,8 @@ module.exports = {
   deleteRoom,
   updateBedMaintenance,
   getFeeConfig,
+  getAllocations,
+  allocateBed,
+  searchStudents,
+  vacateAllocation,
 };
