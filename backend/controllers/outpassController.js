@@ -1,7 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
+const prisma = require('../utils/prisma');
 const { validationResult } = require('express-validator');
-
-const prisma = new PrismaClient();
 
 /**
  * Shared select for warden-facing student details on an outpass.

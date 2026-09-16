@@ -1,8 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
+const prisma = require('../utils/prisma');
 const { hashPassword, comparePassword, generateResetToken, hashResetToken } = require('../utils/password');
 const { generateToken } = require('../utils/jwt');
-
-const prisma = new PrismaClient();
 
 // In-memory store for reset tokens (for development)
 // In production, use Redis or database

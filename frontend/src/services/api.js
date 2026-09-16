@@ -64,7 +64,11 @@ export const wardenAPI = {
   getComplaints: (params) => api.get('/warden/complaints', { params }),
   getComplaintById: (id) => api.get(`/warden/complaints/${id}`),
   updateComplaint: (id, data) => api.put(`/warden/complaints/${id}`, data),
-  getComplaintStats: () => api.get('/warden/complaints/stats')
+  getComplaintStats: () => api.get('/warden/complaints/stats'),
+  // Students
+  getStudents: (params) => api.get('/warden/students', { params }),
+  getStudentById: (id) => api.get(`/warden/students/${id}`),
+  deleteStudent: (id) => api.delete(`/warden/students/${id}`)
 };
 
 // Outpass API calls (Module 6)
@@ -87,12 +91,12 @@ export const outpassAPI = {
 
 // Room Allocation API calls (Warden/Admin)
 export const roomAPI = {
-  getRooms: () => api.get('/room'),
-  getRoom: (id) => api.get(`/room/${id}`),
-  searchStudents: (q) => api.get('/room/students/search', { params: { q } }),
-  getAllocations: (status) => api.get('/room/allocations', { params: status ? { status } : {} }),
-  allocateBed: (data) => api.post('/room/allocate', data),
-  vacateAllocation: (id) => api.put(`/room/allocations/${id}/vacate`)
+  getRooms: () => api.get('/rooms'),
+  getRoom: (id) => api.get(`/rooms/${id}`),
+  searchStudents: (q) => api.get('/rooms/students/search', { params: { q } }),
+  getAllocations: (status) => api.get('/rooms/allocations', { params: status ? { status } : {} }),
+  allocateBed: (data) => api.post('/rooms/allocate', data),
+  vacateAllocation: (id) => api.put(`/rooms/allocations/${id}/vacate`)
 };
 
 // Fees & Payments API calls

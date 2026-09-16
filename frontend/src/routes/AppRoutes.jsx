@@ -20,6 +20,7 @@ import WardenFees from '../pages/WardenFees';
 import RoomAllocation from '../pages/RoomAllocation';
 import RoomsPage from '../pages/rooms/RoomsPage';
 import RoomDetailPage from '../pages/rooms/RoomDetailPage';
+import WardenStudents from '../pages/WardenStudents';
 
 const AppRoutes = () => {
   const { isAuthenticated, user, loading } = useAuth();
@@ -114,6 +115,12 @@ const AppRoutes = () => {
       <Route
         path="/warden/outpass"
         element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenOutpass /></ProtectedRoute>}
+      />
+
+      {/* Students */}
+      <Route
+        path="/warden/students"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenStudents /></ProtectedRoute>}
       />
 
       {/* ── Root redirect ── */}

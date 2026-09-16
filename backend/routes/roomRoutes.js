@@ -13,19 +13,23 @@ router.use(authenticate);
 router.get('/config', roomController.getFeeConfig);
 
 // ── Room list + stats ─────────────────────────────────────────────────────
-// GET /api/rooms?search=&floor=&sharingType=&status=
 router.get('/', roomController.getRooms);
 
+// ── Warden-only operations ───────────────────────────────────────────────
+router.use(authorizeRoles('WARDEN'));
+
+// Allocations (must be before /:id to avoid param conflict)
+router.get('/allocations', roomController.getAllocations);
+router.get('/students/search', roomController.searchStudents);
+router.post('/allocate', roomController.allocateBed);
+router.put('/allocations/:id/vacate', roomController.vacateAllocation);
+
 // ── Room detail ───────────────────────────────────────────────────────────
-// GET /api/rooms/:id
 router.get(
   '/:id',
   param('id').isInt({ min: 1 }).withMessage('Room ID must be a positive integer.'),
   roomController.getRoomById
 );
-
-// ── Warden-only write operations ─────────────────────────────────────────
-router.use(authorizeRoles('WARDEN'));
 
 // POST /api/rooms
 router.post(
