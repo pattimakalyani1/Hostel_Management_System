@@ -67,4 +67,52 @@ export const wardenAPI = {
   getComplaintStats: () => api.get('/warden/complaints/stats')
 };
 
+// Outpass API calls (Module 6)
+export const outpassAPI = {
+  // Student
+  create: (data) => api.post('/outpass', data),
+  getMine: () => api.get('/outpass/my'),
+  // Warden
+  getPending: () => api.get('/outpass/pending'),
+  getApproved: () => api.get('/outpass/approved'),
+  getOverdue: () => api.get('/outpass/overdue'),
+  getAll: () => api.get('/outpass/all'),
+  // Shared
+  getById: (id) => api.get(`/outpass/${id}`),
+  // Warden actions
+  approve: (id, data = {}) => api.put(`/outpass/${id}/approve`, data),
+  reject: (id, wardenComment) => api.put(`/outpass/${id}/reject`, { wardenComment }),
+  markReturned: (id) => api.put(`/outpass/${id}/return`)
+};
+
+// Room Allocation API calls (Warden/Admin)
+export const roomAPI = {
+  getRooms: () => api.get('/room'),
+  getRoom: (id) => api.get(`/room/${id}`),
+  searchStudents: (q) => api.get('/room/students/search', { params: { q } }),
+  getAllocations: (status) => api.get('/room/allocations', { params: status ? { status } : {} }),
+  allocateBed: (data) => api.post('/room/allocate', data),
+  vacateAllocation: (id) => api.put(`/room/allocations/${id}/vacate`)
+};
+
+// Fees & Payments API calls
+export const feeAPI = {
+  // Student
+  getMyFees: () => api.get('/fees/my'),
+  getMyPayments: () => api.get('/fees/my/payments'),
+  // studentId is never sent; the backend derives it from the auth token
+  makePayment: (feeId, data) => api.post(`/fees/${feeId}/payments`, data),
+
+  // Warden
+  getAllFees: () => api.get('/fees'),
+  createFee: (data) => api.post('/fees', data),
+  getFee: (id) => api.get(`/fees/${id}`),
+  updateFee: (id, data) => api.put(`/fees/${id}`, data),
+  deleteFee: (id) => api.delete(`/fees/${id}`),
+  getAllPayments: () => api.get('/fees/payments'),
+  getPayment: (id) => api.get(`/fees/payments/${id}`),
+  getSummary: () => api.get('/fees/summary'),
+  getStudents: () => api.get('/fees/students')
+};
+
 export default api;
