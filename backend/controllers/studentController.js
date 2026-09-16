@@ -1,6 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+const prisma = require('../utils/prisma');
 
 /**
  * Get student profile
@@ -220,12 +218,14 @@ const getDashboard = async (req, res, next) => {
             room: {
               select: {
                 roomNumber: true,
-                floor: true
+                floor: true,
+                roomType: true
               }
             },
             bed: {
               select: {
-                bedNumber: true
+                bedNumber: true,
+                status: true
               }
             }
           },
@@ -290,9 +290,13 @@ const getDashboard = async (req, res, next) => {
         memberSince: student.user.createdAt
       },
       room: currentAllocation ? {
+        allocationId: currentAllocation.id,
         roomNumber: currentAllocation.room.roomNumber,
         floor: currentAllocation.room.floor,
+        roomType: currentAllocation.room.roomType,
         bedNumber: currentAllocation.bed.bedNumber,
+        bedStatus: currentAllocation.bed.status,
+        status: currentAllocation.status,
         allocatedDate: currentAllocation.allocatedDate
       } : null,
       summary: {

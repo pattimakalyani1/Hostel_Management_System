@@ -43,20 +43,22 @@ const Sidebar = ({ userType }) => {
   ];
 
   const wardenMenuItems = [
-    { id: 'dashboard', label: 'Dashboard', path: '/warden/dashboard' },
-    { id: 'rooms', label: 'Rooms', path: '/warden/rooms' },
+    { id: 'dashboard',   label: 'Dashboard',   path: '/warden/dashboard' },
+    { id: 'rooms',       label: 'Rooms',       path: '/warden/rooms' },
     { id: 'allocations', label: 'Allocations', path: '/warden/allocations' },
-    { id: 'fees', label: 'Fees', path: '/warden/fees' },
-    { id: 'complaints', label: 'Complaints', path: '/warden/complaints' },
-    { id: 'outpass', label: 'Outpass', path: '/warden/outpass' },
-    { id: 'students', label: 'Students', path: '/warden/students' }
+    { id: 'fees',        label: 'Fees',        path: '/warden/fees' },
+    { id: 'complaints',  label: 'Complaints',  path: '/warden/complaints' },
+    { id: 'outpass',     label: 'Outpass',     path: '/warden/outpass' },
+    { id: 'students',    label: 'Students',    path: '/warden/students' },
   ];
 
   const menuItems = userType === 'warden' ? wardenMenuItems : studentMenuItems;
 
   const handleMenuClick = (item) => {
-    setActiveItem(item.id);
-    navigate(item.path);
+    if (item.path) {
+      setActiveItem(item.id);
+      navigate(item.path);
+    }
   };
 
   const handleLogout = () => {

@@ -1,25 +1,34 @@
-# Dependencies
+# ── Dependencies ──────────────────────────────────────────
 node_modules/
 
-# Environment variables
+# ── Environment variables (never push secrets) ────────────
 .env
+.env.local
+.env.*.local
 
-# Prisma
-prisma/migrations/**/migration_lock.toml
+# ── Prisma generated & temp files ─────────────────────────
+# Generated client – rebuilt via `prisma generate`
+node_modules/.prisma/
+# Prisma engine temp files left by running processes
+*.tmp
+*.dll.node.tmp*
+# Prisma engine cache (large binaries, OS-specific)
+node_modules/.cache/prisma/
 
-# Logs
-logs
+# ── Logs ──────────────────────────────────────────────────
+logs/
 *.log
 npm-debug.log*
+yarn-debug.log*
 
-# OS files
+# ── Build output ──────────────────────────────────────────
+dist/
+build/
+
+# ── OS files ──────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 
-# IDE
+# ── Editor ────────────────────────────────────────────────
 .vscode/
 .idea/
-
-# Build
-dist/
-build/

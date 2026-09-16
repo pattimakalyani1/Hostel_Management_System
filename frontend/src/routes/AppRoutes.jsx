@@ -18,15 +18,14 @@ import WardenDashboard from '../pages/WardenDashboard';
 import WardenComplaints from '../pages/WardenComplaints';
 import WardenOutpass from '../pages/WardenOutpass';
 import WardenFees from '../pages/WardenFees';
-import WardenStudents from '../pages/WardenStudents';
+import RoomAllocation from '../pages/RoomAllocation';
 import RoomsPage from '../pages/rooms/RoomsPage';
 import RoomDetailPage from '../pages/rooms/RoomDetailPage';
-import RoomAllocation from '../pages/RoomAllocation';
+import WardenStudents from '../pages/WardenStudents';
 
 const AppRoutes = () => {
   const { isAuthenticated, user, loading } = useAuth();
 
-  // Show loading while checking authentication
   if (loading) {
     return (
       <div className="loading-container">
@@ -36,13 +35,9 @@ const AppRoutes = () => {
     );
   }
 
-  // Redirect helper for authenticated users visiting public pages
   const PublicRoute = ({ children }) => {
     if (isAuthenticated) {
-      // Redirect to appropriate dashboard based on role
-      if (user?.role === 'WARDEN') {
-        return <Navigate to="/warden/dashboard" replace />;
-      }
+      if (user?.role === 'WARDEN') return <Navigate to="/warden/dashboard" replace />;
       return <Navigate to="/student/dashboard" replace />;
     }
     return children;
@@ -51,40 +46,12 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route 
-        path="/login" 
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        } 
-      />
-      <Route 
-        path="/register" 
-        element={
-          <PublicRoute>
-            <StudentRegister />
-          </PublicRoute>
-        } 
-      />
-      <Route 
-        path="/forgot-password" 
-        element={
-          <PublicRoute>
-            <ForgotPassword />
-          </PublicRoute>
-        } 
-      />
-      <Route 
-        path="/reset-password" 
-        element={
-          <PublicRoute>
-            <ResetPassword />
-          </PublicRoute>
-        } 
-      />
+      <Route path="/login"           element={<PublicRoute><Login /></PublicRoute>} />
+      <Route path="/register"        element={<PublicRoute><StudentRegister /></PublicRoute>} />
+      <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+      <Route path="/reset-password"  element={<PublicRoute><ResetPassword /></PublicRoute>} />
 
-      {/* Protected Routes - Change Password (both roles) */}
+      {/* Change Password (both roles) */}
       <Route
         path="/change-password"
         element={
@@ -94,7 +61,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Protected Routes - Student */}
+      {/* Student Routes */}
       <Route
         path="/student/dashboard"
         element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentDashboard /></ProtectedRoute>}
@@ -120,7 +87,7 @@ const AppRoutes = () => {
         element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentPayments /></ProtectedRoute>}
       />
 
-      {/* Protected Routes - Warden */}
+      {/* Warden Routes */}
       <Route
         path="/warden/dashboard"
         element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenDashboard /></ProtectedRoute>}
@@ -155,22 +122,17 @@ const AppRoutes = () => {
       />
 
       {/* Root redirect */}
-      <Route 
-        path="/" 
+      <Route
+        path="/"
         element={
-          isAuthenticated 
+          isAuthenticated
             ? <Navigate to={user?.role === 'WARDEN' ? '/warden/dashboard' : '/student/dashboard'} replace />
             : <Navigate to="/login" replace />
-        } 
+        }
       />
 
-      {/* Catch all - redirect to appropriate page */}
-      <Route 
-        path="*" 
-        element={
-          <Navigate to="/" replace />
-        } 
-      />
+      {/* Catch-all */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
