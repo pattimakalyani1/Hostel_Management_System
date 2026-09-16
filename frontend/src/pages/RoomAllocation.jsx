@@ -254,9 +254,9 @@ const RoomAllocation = () => {
                       {room.beds.map((bed) => (
                         <div className="bed-row" key={bed.id}>
                           <div className="bed-row-info">
-                            <span className="bed-number">Bed {bed.bedNumber}</span>
-                            {bed.occupant && (
-                              <span className="bed-occupant">{bed.occupant.studentName}</span>
+                            <span className="bed-number">{bed.bedNumber}</span>
+                            {bed.student && (
+                              <span className="bed-occupant">{bed.student.name}</span>
                             )}
                           </div>
                           <span className={bedStatusBadge(bed.status)}>{bed.status}</span>
@@ -438,7 +438,7 @@ const RoomAllocation = () => {
                       </option>
                       {bedsForRoom.map((bed) => (
                         <option key={bed.id} value={bed.id} disabled={bed.status !== 'AVAILABLE'}>
-                          Bed {bed.bedNumber} — {bed.status}
+                          {bed.bedNumber} — {bed.status}
                         </option>
                       ))}
                     </select>

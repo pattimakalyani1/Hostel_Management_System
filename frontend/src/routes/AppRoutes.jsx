@@ -9,20 +9,23 @@ import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 import ChangePassword from '../pages/ChangePassword';
 import StudentDashboard from '../pages/StudentDashboard';
+import StudentProfile from '../pages/StudentProfile';
 import StudentComplaints from '../pages/StudentComplaints';
-import WardenDashboard from '../pages/WardenDashboard';
+import StudentOutpass from '../pages/StudentOutpass';
 import StudentFees from '../pages/StudentFees';
 import StudentPayments from '../pages/StudentPayments';
+import WardenDashboard from '../pages/WardenDashboard';
+import WardenComplaints from '../pages/WardenComplaints';
+import WardenOutpass from '../pages/WardenOutpass';
 import WardenFees from '../pages/WardenFees';
 import RoomAllocation from '../pages/RoomAllocation';
-import WardenComplaints from '../pages/WardenComplaints';
-import StudentOutpass from '../pages/StudentOutpass';
-import WardenOutpass from '../pages/WardenOutpass';
+import RoomsPage from '../pages/rooms/RoomsPage';
+import RoomDetailPage from '../pages/rooms/RoomDetailPage';
+import WardenStudents from '../pages/WardenStudents';
 
 const AppRoutes = () => {
   const { isAuthenticated, user, loading } = useAuth();
 
-  // Show loading while checking authentication
   if (loading) {
     return (
       <div className="loading-container">
@@ -32,13 +35,9 @@ const AppRoutes = () => {
     );
   }
 
-  // Redirect helper for authenticated users visiting public pages
   const PublicRoute = ({ children }) => {
     if (isAuthenticated) {
-      // Redirect to appropriate dashboard based on role
-      if (user?.role === 'WARDEN') {
-        return <Navigate to="/warden/dashboard" replace />;
-      }
+      if (user?.role === 'WARDEN') return <Navigate to="/warden/dashboard" replace />;
       return <Navigate to="/student/dashboard" replace />;
     }
     return children;
@@ -47,40 +46,12 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route 
-        path="/login" 
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        } 
-      />
-      <Route 
-        path="/register" 
-        element={
-          <PublicRoute>
-            <StudentRegister />
-          </PublicRoute>
-        } 
-      />
-      <Route 
-        path="/forgot-password" 
-        element={
-          <PublicRoute>
-            <ForgotPassword />
-          </PublicRoute>
-        } 
-      />
-      <Route 
-        path="/reset-password" 
-        element={
-          <PublicRoute>
-            <ResetPassword />
-          </PublicRoute>
-        } 
-      />
+      <Route path="/login"           element={<PublicRoute><Login /></PublicRoute>} />
+      <Route path="/register"        element={<PublicRoute><StudentRegister /></PublicRoute>} />
+      <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+      <Route path="/reset-password"  element={<PublicRoute><ResetPassword /></PublicRoute>} />
 
-      {/* Protected Routes - Change Password (both roles) */}
+      {/* Change Password (both roles) */}
       <Route
         path="/change-password"
         element={
@@ -90,107 +61,78 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Protected Routes - Student */}
+      {/* Student Routes */}
       <Route
         path="/student/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={['STUDENT']}>
-            <StudentDashboard />
-          </ProtectedRoute>
-        }
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentDashboard /></ProtectedRoute>}
       />
       <Route
-        path="/student/fees"
-        element={
-          <ProtectedRoute allowedRoles={['STUDENT']}>
-            <StudentFees />
-          </ProtectedRoute>
-        }
+        path="/student/profile"
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentProfile /></ProtectedRoute>}
       />
       <Route
         path="/student/complaints"
-        element={
-          <ProtectedRoute allowedRoles={['STUDENT']}>
-            <StudentComplaints />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/student/payments"
-        element={
-          <ProtectedRoute allowedRoles={['STUDENT']}>
-            <StudentPayments />
-          </ProtectedRoute>
-        }
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentComplaints /></ProtectedRoute>}
       />
       <Route
         path="/student/outpass"
-        element={
-          <ProtectedRoute allowedRoles={['STUDENT']}>
-            <StudentOutpass />
-          </ProtectedRoute>
-        }
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentOutpass /></ProtectedRoute>}
+      />
+      <Route
+        path="/student/fees"
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentFees /></ProtectedRoute>}
+      />
+      <Route
+        path="/student/payments"
+        element={<ProtectedRoute allowedRoles={['STUDENT']}><StudentPayments /></ProtectedRoute>}
       />
 
-      {/* Protected Routes - Warden */}
+      {/* Warden Routes */}
       <Route
         path="/warden/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={['WARDEN']}>
-            <WardenDashboard />
-          </ProtectedRoute>
-        }
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenDashboard /></ProtectedRoute>}
       />
       <Route
-        path="/warden/fees"
-        element={
-          <ProtectedRoute allowedRoles={['WARDEN']}>
-            <WardenFees />
-          </ProtectedRoute>
-        }
+        path="/warden/rooms"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><RoomsPage /></ProtectedRoute>}
+      />
+      <Route
+        path="/warden/rooms/:id"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><RoomDetailPage /></ProtectedRoute>}
       />
       <Route
         path="/warden/allocations"
-        element={
-          <ProtectedRoute allowedRoles={['WARDEN']}>
-            <RoomAllocation />
-          </ProtectedRoute>
-        }
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><RoomAllocation /></ProtectedRoute>}
+      />
+      <Route
+        path="/warden/fees"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenFees /></ProtectedRoute>}
       />
       <Route
         path="/warden/complaints"
-        element={
-          <ProtectedRoute allowedRoles={['WARDEN']}>
-            <WardenComplaints />
-          </ProtectedRoute>
-        }
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenComplaints /></ProtectedRoute>}
       />
       <Route
         path="/warden/outpass"
-        element={
-          <ProtectedRoute allowedRoles={['WARDEN']}>
-            <WardenOutpass />
-          </ProtectedRoute>
-        }
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenOutpass /></ProtectedRoute>}
+      />
+      <Route
+        path="/warden/students"
+        element={<ProtectedRoute allowedRoles={['WARDEN']}><WardenStudents /></ProtectedRoute>}
       />
 
       {/* Root redirect */}
-      <Route 
-        path="/" 
+      <Route
+        path="/"
         element={
-          isAuthenticated 
+          isAuthenticated
             ? <Navigate to={user?.role === 'WARDEN' ? '/warden/dashboard' : '/student/dashboard'} replace />
             : <Navigate to="/login" replace />
-        } 
+        }
       />
 
-      {/* Catch all - redirect to appropriate page */}
-      <Route 
-        path="*" 
-        element={
-          <Navigate to="/" replace />
-        } 
-      />
+      {/* Catch-all */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };

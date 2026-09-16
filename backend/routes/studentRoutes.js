@@ -13,6 +13,13 @@ router.use(authorizeRoles('STUDENT'));
 // Student dashboard
 router.get('/dashboard', studentController.getDashboard);
 
+// Student profile
+router.get('/profile', studentController.getProfile);
+router.put('/profile', studentController.updateProfile);
+
+// Student room
+router.get('/room', studentController.getRoom);
+
 // Complaints
 router.get('/complaints', complaintController.getStudentComplaints);
 router.post('/complaints', complaintController.createComplaintValidation, complaintController.createComplaint);

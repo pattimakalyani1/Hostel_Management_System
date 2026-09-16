@@ -1,7 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
+const prisma = require('../utils/prisma');
 const { body, param, query, validationResult } = require('express-validator');
-
-const prisma = new PrismaClient();
 
 // Valid categories and statuses matching Prisma enums
 const VALID_CATEGORIES = ['WATER', 'ELECTRICITY', 'FAN_AC', 'CLEANING', 'WIFI', 'FOOD', 'OTHER'];
