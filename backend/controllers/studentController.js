@@ -1,4 +1,5 @@
 const prisma = require('../utils/prisma');
+const { calculateFee } = require('./roomController');
 
 /**
  * Get student profile
@@ -122,6 +123,11 @@ const getRoom = async (req, res, next) => {
           },
           orderBy: { allocatedDate: 'desc' },
           take: 1
+        },
+        fees: {
+          where: { description: { startsWith: 'Room Rent' } },
+          orderBy: { createdAt: 'desc' },
+          take: 1
         }
       }
     });
@@ -163,6 +169,11 @@ const getRoom = async (req, res, next) => {
       }
     });
 
+    // Applicable room fee derived from the room's sharing type (single source
+    // of truth: roomController.calculateFee) + the latest generated room-rent Fee.
+    const applicableFee = calculateFee(allocation.room.sharingType);
+    const roomRentFee = student.fees && student.fees[0] ? student.fees[0] : null;
+
     res.json({
       allocated: true,
       room: {
@@ -170,13 +181,27 @@ const getRoom = async (req, res, next) => {
         roomNumber: allocation.room.roomNumber,
         floor: allocation.room.floor,
         capacity: allocation.room.capacity,
+        sharingType: allocation.room.sharingType,
         roomType: allocation.room.roomType,
-        status: allocation.room.status
+        status: allocation.room.status,
+        applicableFee: applicableFee
       },
       bed: {
         id: allocation.bed.id,
         bedNumber: allocation.bed.bedNumber,
         status: allocation.bed.status
+      },
+      fee: roomRentFee ? {
+        id: roomRentFee.id,
+        amount: parseFloat(roomRentFee.amount),
+        status: roomRentFee.status,
+        dueDate: roomRentFee.dueDate,
+        description: roomRentFee.description
+      } : {
+        amount: applicableFee,
+        status: 'PENDING',
+        dueDate: null,
+        description: `Room Rent (${allocation.room.sharingType} Sharing)`
       },
       allocation: {
         id: allocation.id,

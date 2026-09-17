@@ -22,7 +22,14 @@
   color: var(--gray-800);
 }
 
-/* Navbar User */
+/* Navbar right side (notification bell) */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Navbar User (legacy; identity now lives in the sidebar) */
 .navbar-user {
   display: flex;
   align-items: center;

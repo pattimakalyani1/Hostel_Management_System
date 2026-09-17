@@ -28,17 +28,20 @@ const StudentProfile = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      // Fetch profile and room data from dashboard endpoint
-      const response = await studentAPI.getDashboard();
-      const data = response.data;
-      
-      setProfileData(data.student);
-      setRoomData(data.room);
-      
+      // Profile endpoint returns full details incl. address; dashboard gives room.
+      const [profileRes, dashboardRes] = await Promise.all([
+        studentAPI.getProfile(),
+        studentAPI.getDashboard()
+      ]);
+      const profile = profileRes.data;
+
+      setProfileData(profile);
+      setRoomData(dashboardRes.data.room);
+
       setFormData({
-        name: data.student?.name || '',
-        phone: data.student?.phone || '',
-        address: data.student?.address || ''
+        name: profile?.name || '',
+        phone: profile?.phone || '',
+        address: profile?.address || ''
       });
     } catch (err) {
       console.error('Fetch error:', err);

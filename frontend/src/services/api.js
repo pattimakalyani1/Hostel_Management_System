@@ -102,6 +102,14 @@ export const roomAPI = {
   vacateAllocation: (id) => api.put(`/rooms/allocations/${id}/vacate`)
 };
 
+// Notifications API calls (shared by both roles; each user sees only their own)
+export const notificationAPI = {
+  getAll: () => api.get('/notifications'),
+  getUnreadCount: () => api.get('/notifications/unread-count'),
+  markAsRead: (id) => api.put(`/notifications/${id}/read`),
+  markAllAsRead: () => api.put('/notifications/read-all')
+};
+
 // Fees & Payments API calls
 export const feeAPI = {
   // Student

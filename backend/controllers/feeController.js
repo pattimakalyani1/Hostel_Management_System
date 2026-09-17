@@ -1,4 +1,5 @@
 const prisma = require('../utils/prisma');
+const notificationService = require('../services/notificationService');
 
 // Valid PaymentMethod enum values (mirrors the Prisma schema).
 const VALID_PAYMENT_METHODS = ['CASH', 'UPI', 'CARD', 'ONLINE'];
@@ -781,7 +782,7 @@ const createPayment = async (req, res, next) => {
     // Identify the logged-in student (never trust a studentId from the body)
     const student = await prisma.student.findUnique({
       where: { userId: req.user.userId },
-      select: { id: true }
+      select: { id: true, name: true }
     });
 
     if (!student) {
@@ -872,6 +873,14 @@ const createPayment = async (req, res, next) => {
       }
       throw txError;
     }
+
+    // Notify wardens that a payment was made (non-fatal).
+    await notificationService.notifyWardens({
+      type: 'PAYMENT',
+      title: 'Payment Received',
+      message: `${student.name} paid ₹${parsedAmount} towards ${fee.description || 'a fee'}.`,
+      link: '/warden/fees'
+    });
 
     res.status(201).json({
       message: 'Payment successful.',

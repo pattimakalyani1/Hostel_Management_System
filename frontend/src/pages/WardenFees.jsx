@@ -97,7 +97,7 @@ const WardenFees = () => {
         <div className="info-card">
           <div className="empty-state">
             <p>No fees found.</p>
-            <span className="empty-hint">Use "Add Fee" to create a fee for a student.</span>
+            <span className="empty-hint">Fees are generated automatically when a student is allocated a room.</span>
           </div>
         </div>
       );
@@ -226,11 +226,6 @@ const WardenFees = () => {
               Payments
             </button>
           </div>
-          {tab === 'fees' && (
-            <button className="fees-btn fees-btn-primary" onClick={() => setFormModal({ mode: 'create', fee: null })}>
-              + Add Fee
-            </button>
-          )}
         </div>
 
         {tab === 'fees' ? renderFeesTable() : renderPaymentsTable()}
