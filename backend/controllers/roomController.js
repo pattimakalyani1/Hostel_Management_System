@@ -1,4 +1,8 @@
 const prisma = require('../utils/prisma');
+const notificationService = require('../services/notificationService');
+
+// Prefix used to identify auto-generated room-rent fees (for dedup + display).
+const ROOM_FEE_DESCRIPTION_PREFIX = 'Room Rent';
 
 // ---------------------------------------------------------------------------
 // Fee configuration – single source of truth
@@ -526,6 +530,10 @@ const allocateBed = async (req, res, next) => {
       return res.status(400).json({ message: 'Student already has an active bed allocation.' });
     }
 
+    // Validate room exists (needed to derive the applicable room fee)
+    const room = await prisma.room.findUnique({ where: { id: roomId } });
+    if (!room) return res.status(404).json({ message: 'Room not found.' });
+
     // Validate bed exists and is available
     const bed = await prisma.bed.findFirst({
       where: { id: bedId, roomId },
@@ -536,16 +544,58 @@ const allocateBed = async (req, res, next) => {
       return res.status(400).json({ message: `Bed is currently ${bed.status}.` });
     }
 
-    // Create allocation and update bed status in a transaction
-    const allocation = await prisma.$transaction(async (tx) => {
+    // Applicable room fee derived from the room's sharing type (single source of
+    // truth). We auto-generate ONE room-rent Fee at allocation time so the warden
+    // never creates a fee per student; the existing Fee/Payment flow handles rest.
+    const roomFeeAmount = calculateFee(room.sharingType);
+    const existingRoomFee = await prisma.fee.findFirst({
+      where: {
+        studentId,
+        description: { startsWith: ROOM_FEE_DESCRIPTION_PREFIX },
+        status: { in: ['PENDING', 'PARTIAL', 'OVERDUE'] }
+      }
+    });
+
+    // Create allocation, occupy the bed, and (optionally) the room-rent fee atomically.
+    const { allocation, feeCreated } = await prisma.$transaction(async (tx) => {
       const alloc = await tx.allocation.create({
         data: { studentId, roomId, bedId, status: 'ACTIVE', allocatedDate: new Date() }
       });
       await tx.bed.update({ where: { id: bedId }, data: { status: 'OCCUPIED' } });
-      return alloc;
+
+      let createdFee = false;
+      if (!existingRoomFee) {
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + 30);
+        await tx.fee.create({
+          data: {
+            studentId,
+            amount: roomFeeAmount,
+            dueDate,
+            description: `${ROOM_FEE_DESCRIPTION_PREFIX} - Room ${room.roomNumber} (${room.sharingType} Sharing)`,
+            status: 'PENDING'
+          }
+        });
+        createdFee = true;
+      }
+      return { allocation: alloc, feeCreated: createdFee };
     });
 
-    res.status(201).json({ message: 'Bed allocated successfully.', allocation });
+    // Notify the student about the room assignment (non-fatal).
+    await notificationService.notifyStudentById({
+      studentId,
+      type: 'ROOM',
+      title: 'Room Allocated',
+      message: `You have been allocated to Room ${room.roomNumber} (${room.sharingType} Sharing), ${bed.bedNumber}.`
+        + (feeCreated ? ` A room fee of ₹${roomFeeAmount} has been generated.` : ''),
+      link: '/student/room'
+    });
+
+    res.status(201).json({
+      message: 'Bed allocated successfully.',
+      allocation,
+      roomFee: { amount: roomFeeAmount, generated: feeCreated }
+    });
   } catch (error) {
     console.error('Allocate bed error:', error);
     next(error);
@@ -560,7 +610,8 @@ const vacateAllocation = async (req, res, next) => {
     const { id } = req.params;
 
     const allocation = await prisma.allocation.findUnique({
-      where: { id: parseInt(id) }
+      where: { id: parseInt(id) },
+      include: { room: { select: { roomNumber: true } } }
     });
     if (!allocation) return res.status(404).json({ message: 'Allocation not found.' });
     if (allocation.status !== 'ACTIVE') {
@@ -576,6 +627,15 @@ const vacateAllocation = async (req, res, next) => {
         where: { id: allocation.bedId },
         data: { status: 'AVAILABLE' }
       });
+    });
+
+    // Notify the student their room was vacated (non-fatal).
+    await notificationService.notifyStudentById({
+      studentId: allocation.studentId,
+      type: 'ROOM',
+      title: 'Room Vacated',
+      message: `Your allocation for Room ${allocation.room?.roomNumber || ''} has been vacated by the warden.`.trim(),
+      link: '/student/room'
     });
 
     res.json({ message: 'Bed vacated successfully.' });
@@ -595,6 +655,7 @@ module.exports = {
   getFeeConfig,
   getAllocations,
   allocateBed,
+  calculateFee,
   searchStudents,
   vacateAllocation,
 };

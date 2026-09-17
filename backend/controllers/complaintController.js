@@ -1,5 +1,6 @@
 const prisma = require('../utils/prisma');
 const { body, param, query, validationResult } = require('express-validator');
+const notificationService = require('../services/notificationService');
 
 // Valid categories and statuses matching Prisma enums
 const VALID_CATEGORIES = ['WATER', 'ELECTRICITY', 'FAN_AC', 'CLEANING', 'WIFI', 'FOOD', 'OTHER'];
@@ -36,6 +37,14 @@ const createComplaint = async (req, res, next) => {
         description: description.trim(),
         category
       }
+    });
+
+    // Notify wardens of the new complaint (non-fatal).
+    await notificationService.notifyWardens({
+      type: 'COMPLAINT',
+      title: 'New Complaint Submitted',
+      message: `${student.name} submitted a complaint: "${complaint.title}" (${complaint.category}).`,
+      link: '/warden/complaints'
     });
 
     res.status(201).json({
@@ -292,6 +301,18 @@ const updateComplaint = async (req, res, next) => {
           }
         }
       }
+    });
+
+    // Notify the owning student of the status change / warden response (non-fatal).
+    const statusChanged = updateData.status && updateData.status !== existing.status;
+    await notificationService.notifyStudentById({
+      studentId: existing.studentId,
+      type: 'COMPLAINT',
+      title: statusChanged ? `Complaint ${updateData.status}` : 'Complaint Updated',
+      message: statusChanged
+        ? `Your complaint "${updated.title}" is now ${updateData.status}.`
+        : `Your complaint "${updated.title}" received a response from the warden.`,
+      link: '/student/complaints'
     });
 
     res.json({

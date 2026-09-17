@@ -1,5 +1,6 @@
 const prisma = require('../utils/prisma');
 const { validationResult } = require('express-validator');
+const notificationService = require('../services/notificationService');
 
 /**
  * Shared select for warden-facing student details on an outpass.
@@ -306,6 +307,14 @@ const approveOutpass = async (req, res, next) => {
       include: outpassStudentInclude
     });
 
+    await notificationService.notifyStudentById({
+      studentId: updated.studentId,
+      type: 'OUTPASS',
+      title: 'Outpass Approved',
+      message: `Your outpass to ${updated.destination} has been approved.`,
+      link: '/student/outpass'
+    });
+
     res.json({ message: 'Outpass approved.', outpass: updated });
   } catch (error) {
     console.error('Approve outpass error:', error);
@@ -354,6 +363,15 @@ const rejectOutpass = async (req, res, next) => {
       include: outpassStudentInclude
     });
 
+    await notificationService.notifyStudentById({
+      studentId: updated.studentId,
+      type: 'OUTPASS',
+      title: 'Outpass Rejected',
+      message: `Your outpass to ${updated.destination} was rejected.`
+        + (updated.wardenComment ? ` Reason: ${updated.wardenComment}` : ''),
+      link: '/student/outpass'
+    });
+
     res.json({ message: 'Outpass rejected.', outpass: updated });
   } catch (error) {
     console.error('Reject outpass error:', error);
@@ -391,6 +409,14 @@ const returnOutpass = async (req, res, next) => {
         actualReturnTime: new Date() // server time, never trusted from frontend
       },
       include: outpassStudentInclude
+    });
+
+    await notificationService.notifyStudentById({
+      studentId: updated.studentId,
+      type: 'OUTPASS',
+      title: 'Outpass Closed',
+      message: `Your outpass to ${updated.destination} has been marked as returned.`,
+      link: '/student/outpass'
     });
 
     res.json({ message: 'Student marked as returned.', outpass: updated });

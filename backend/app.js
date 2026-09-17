@@ -9,6 +9,7 @@ const wardenRoutes  = require('./routes/wardenRoutes');
 const roomRoutes    = require('./routes/roomRoutes');
 const feeRoutes     = require('./routes/feeRoutes');
 const outpassRoutes = require('./routes/outpassRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/api/warden',  wardenRoutes);
 app.use('/api/rooms',   roomRoutes);
 app.use('/api/fees',    feeRoutes);
 app.use('/api/outpass', outpassRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // 404 handler
 app.use((req, res) => {

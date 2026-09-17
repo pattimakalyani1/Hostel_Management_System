@@ -190,8 +190,9 @@ const getStudentById = async (req, res, next) => {
             id: true,
             reason: true,
             status: true,
-            fromDate: true,
-            toDate: true
+            destination: true,
+            leavingTime: true,
+            expectedReturnTime: true
           },
           orderBy: { createdAt: 'desc' },
           take: 5

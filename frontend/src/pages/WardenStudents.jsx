@@ -176,14 +176,6 @@ const WardenStudents = () => {
                     <span className="detail-value">{s.address}</span>
                   </div>
                   <div className="detail-item">
-                    <span className="detail-label">Course</span>
-                    <span className="detail-value">{s.course}</span>
-                  </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Year</span>
-                    <span className="detail-value">{s.year}</span>
-                  </div>
-                  <div className="detail-item">
                     <span className="detail-label">Status</span>
                     <span className={`status-badge ${s.isActive ? 'active' : 'inactive'}`}>
                       {s.isActive ? 'Active' : 'Inactive'}
@@ -292,8 +284,8 @@ const WardenStudents = () => {
                       <thead>
                         <tr>
                           <th>Reason</th>
-                          <th>From</th>
-                          <th>To</th>
+                          <th>Leaving</th>
+                          <th>Expected Return</th>
                           <th>Status</th>
                         </tr>
                       </thead>
@@ -301,8 +293,8 @@ const WardenStudents = () => {
                         {s.recentOutpasses.map(o => (
                           <tr key={o.id}>
                             <td>{o.reason}</td>
-                            <td>{formatDate(o.fromDate)}</td>
-                            <td>{formatDate(o.toDate)}</td>
+                            <td>{formatDate(o.leavingTime)}</td>
+                            <td>{formatDate(o.expectedReturnTime)}</td>
                             <td><span className={`status-badge ${o.status.toLowerCase()}`}>{o.status}</span></td>
                           </tr>
                         ))}
@@ -412,7 +404,7 @@ const WardenStudents = () => {
                         <td className="address-cell">{student.address}</td>
                         <td>
                           {student.room
-                            ? `${student.room.roomNumber} / Bed ${student.room.bedNumber}`
+                            ? `${student.room.roomNumber} / ${student.room.bedNumber}`
                             : <span className="no-data">Not allocated</span>
                           }
                         </td>
