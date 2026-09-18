@@ -13,9 +13,25 @@ const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 
-// CORS configuration - Allow frontend on port 5173
+// CORS configuration
+// Allowed origins come from the CORS_ORIGIN env var (comma-separated list),
+// falling back to the local dev frontend. This lets the deployed frontend
+// (e.g. Vercel) talk to the API without hardcoding its URL.
+const defaultOrigins = ['http://localhost:5173'];
+const envOrigins = (process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow non-browser requests (curl, health checks) with no Origin header.
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']

@@ -1,0 +1,47 @@
+# Render Blueprint for the Hostel Management System backend.
+# This repo is a monorepo (backend/ and frontend/ are sibling folders with
+# their own package.json). The backend has NO package.json at the repo root,
+# which is why a default Render deploy fails with:
+#   ENOENT ... open '/opt/render/project/src/package.json'
+# Setting rootDir tells Render to run inside backend/.
+#
+# To use: in Render, create a "Blueprint" service pointing at this repo, or
+# apply these same values manually in an existing Web Service's Settings.
+
+services:
+  - type: web
+    name: hostel-management-backend
+    runtime: node
+    plan: free
+    rootDir: backend
+    # Install deps AND generate the Prisma client (Render does a fresh install,
+    # so the client must be generated on their build server).
+    buildCommand: npm install && npx prisma generate
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      # Node version to match local development.
+      - key: NODE_VERSION
+        value: 20.11.1
+      # Do NOT set PORT — Render assigns it and server.js reads process.env.PORT.
+      #
+      # Secrets: set these in the Render dashboard (Environment tab) or when
+      # prompted by the Blueprint. They are intentionally left without values
+      # here so credentials are never committed to Git.
+      - key: DATABASE_URL      # Supabase pooler URL (port 6543, ?pgbouncer=true&connection_limit=1)
+        sync: false
+      - key: DIRECT_URL        # Supabase direct URL (port 5432)
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 1d
+      # Comma-separated allowed frontend origins (your deployed Vercel URL).
+      - key: CORS_ORIGIN
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: RESET_TOKEN_EXPIRY
+        value: "30"
